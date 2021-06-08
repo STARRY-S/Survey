@@ -22,10 +22,14 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-    if (!req.session.loggedin)
+    if (!req.session.loggedin) {
+        res.locals.title = "登录 | 问卷调查系统";
         res.render('login');
-    else
+    }
+    else {
+        res.locals.title = "登录成功 | 问卷调查系统";
         res.render('success');
+    }
 });
 
 router.post('/auth', (req, res) => {
@@ -42,8 +46,10 @@ router.post('/auth', (req, res) => {
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = name;
+                res.locals.title = "登录成功 | 问卷调查系统";
 				res.render('success');
 			} else {
+                // res.locals.title = "登录失败 | 问卷调查系统";
                 res.send('<script>\
                     alert("Incorrect Username/Password")</script>');
 			}

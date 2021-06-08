@@ -33,13 +33,17 @@
 
 /* Footer */
 .footer {
-  position: fixed;
+  position: auto;
   bottom: 0;
   width: 100%;
-  padding: 20px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   background: #003651;
-  /* margin-top: 20px; */
   margin-bottom: 0px;
+}
+
+.footer div {
+  padding: 10px;
 }
 
 .footer h2 {

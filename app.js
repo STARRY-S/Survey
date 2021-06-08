@@ -17,10 +17,13 @@ app.use(session({
 app.use('/login', loginRouter);
 
 app.get('/', (req, res) => {
-	if (req.loggedin)
+	if (req.session.loggedin) {
+		res.locals.title = "问卷调查系统";
 		res.render('index');
-	else
-		res.render('index');
+	} else {
+		res.locals.title = "登录 | 问卷调查系统";
+		res.render('login');
+	}
 });
 
 app.use((err, req, res, next) => {
