@@ -73,6 +73,8 @@ body {
   background-color: #aaa;
   width: 100%;
   padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* Add a card effect for articles */
@@ -80,6 +82,7 @@ body {
   background-color: white;
   padding: 20px;
   margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 /* Footer */

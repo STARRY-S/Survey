@@ -1,11 +1,8 @@
 <%- include('header.ejs') %>
 
-<div class="leftcolumn">
-<div class="center_box">
-    <h1>问卷调查系统</h1>
-    <br><br>
-    <p>问卷部分尚未完工，敬请期待。</p>
-</div>
-</div>
+
+<% if (site.userType === 'admin') { %>
+  <%- include('admin/admin_index.ejs') %>
+<% } %>
 
 <%- include('footer.ejs') %>

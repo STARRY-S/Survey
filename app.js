@@ -10,7 +10,8 @@ const regRouter    = require('./routes/register');
 
 app.locals.site = {
 		title: 			 '高校问卷调查系统',
-		description: '欢迎大家填写问卷。',
+		description: '这是一条看起来很高大上但没什么用的宣传标语。',
+		userType:			'admin',
 };
 
 app.set('view engine', 'ejs');

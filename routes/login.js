@@ -19,22 +19,7 @@ router.post('/auth', (req, res) => {
   let name = req.body.username;
   let pwd  = req.body.password;
   let type = req.body.type;
-	console.log(type);
-
-	// let tableName = '';
-	// switch(type) {
-	// 	case 'student':
-	// 		tableName = 'student';
-	// 		break;
-	// 	case 'teacher':
-	// 		tableName = 'teacher';
-	// 		break;
-	// 	case 'admin'  :
-	// 		tableName = 'admin';
-	// 	default:
-	// 		tableName = 'student';
-	// 		break;
-	// }
+	// console.log(type);
 
 	// TODO: login via name or email or phone
   if (name && pwd) {
@@ -46,6 +31,7 @@ router.post('/auth', (req, res) => {
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = name;
+				res.locals.userType  = type;
 				res.redirect('/');
 			} else {
 				res.locals.pageTitle = "登录失败";
