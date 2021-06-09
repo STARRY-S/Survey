@@ -1,7 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const bodyParser = require('body-parser');
-const path = require('path');
 const router = express.Router();
 const mysql = require('mysql');
 
@@ -22,18 +20,19 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-    if (!req.session.loggedin) {
-        res.locals.title = "登录 | 问卷调查系统";
+	let loggedin = req.session.loggedin;
+	res.locals.loggedin = loggedin;
+    if (!loggedin) {
+        res.locals.pageTitle = "请登录";
         res.render('login');
     }
     else {
-        res.locals.title = "登录成功 | 问卷调查系统";
-        res.render('success');
+        res.locals.pageTitle = "欢迎回来";
+        res.redirect('/');
     }
 });
 
 router.post('/auth', (req, res) => {
-  // Insert Login Code Here
   let name = req.body.username;
   let pwd  = req.body.password;
   let type = req.body.type;
@@ -46,24 +45,20 @@ router.post('/auth', (req, res) => {
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = name;
-                res.locals.title = "登录成功 | 问卷调查系统";
-				res.render('success');
+				res.redirect('/');
 			} else {
-                // res.locals.title = "登录失败 | 问卷调查系统";
-                res.send('<script>\
-                    alert("Incorrect Username/Password")</script>');
+				res.locals.pageTitle = "登录失败";
+				res.locals.errorMessage = "用户名或密码错误";
+				res.render('login');
 			}
 			res.end();
 		});
 	} else {
-		res.send('Please enter Username and Password!');
+		res.locals.pageTitle = "登录失败";
+		res.locals.errorMessage = "请输入用户名和密码";
+		res.render('login');
 		res.end();
 	}
-
-  // res.json([
-  //     `Username: ${username}`,
-  //     `Password: ${password}`
-  // ]);
 });
 
 module.exports = router;

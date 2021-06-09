@@ -7,19 +7,29 @@
     <meta name="theme-color" content="#33363b">
     <meta name="msapplication-TileColor" content="#33363b">
     <link rel="stylesheet" href="/css/normalize.css">
-    <title><%= title %></title>
+
+    <% if (typeof pageTitle !== 'undefined') {%>
+    <title><%= pageTitle + ' | ' +site.title %></title>
+    <% } else { %>
+    <title><%= site.title %></title>
+    <% } %>
+
     <link rel="stylesheet" href="/css/header.css">
 </head>
 
 <body>
 <div class="header">
   <h1>高校问卷调查系统</h1>
-  <!-- <p>欢迎大家前来填写。</p> -->
+  <p><%= site.description %></p>
 </div>
 
 <div class="topnav">
   <a href="/">主页</a>
   <a href="/about">关于</a>
   <a href="/frient">友情链接</a>
+  <% if (typeof loggedin === 'undefined' || !loggedin) { %>
   <a href="/login" style="float:right">登录</a>
+  <% } else  { %>
+  <a href="/logout" style="float:right">退出</a>
+  <% } %>
 </div>
