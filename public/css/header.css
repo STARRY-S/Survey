@@ -9,6 +9,10 @@
   color: #f1f1f1;
 }
 
+.header p {
+  color: #fff;
+}
+
 .topnav {
   padding: 5px;
   overflow: hidden;

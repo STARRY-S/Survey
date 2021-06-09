@@ -32,18 +32,36 @@ router.post('/auth', (req, res) => {
   let pwd  = req.body.password;
   let type = req.body.type;
 
+	let tableName = '';
+	switch(type) {
+		case 'student':
+			tableName = 'students';
+			break;
+		case 'teacher':
+			tableName = 'teachers';
+			break;
+		case 'admin'  :
+			tableName = 'admin';
+		default:
+			tableName = 'students';
+			break;
+	}
+
+	// TODO: login via name or email or phone
   if (name && pwd) {
 		connection.query(
-            `select id from admin where name="${name}" and password="${pwd}"`,
-            (error, results, fields) => {
-            if (error) console.error(error);
+            `select id from ${tableName} ` +
+								`where name="${name}" and password="${pwd}"`,
+            (error, results, fields) =>
+		{
+			if (error) console.error(error);
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = name;
 				res.redirect('/');
 			} else {
 				res.locals.pageTitle = "登录失败";
-				res.locals.errorMessage = "用户名或密码错误";
+				res.locals.errorMessage = "请检查帐号及密码以及用户类型是否正确";
 				res.render('login');
 			}
 			res.end();

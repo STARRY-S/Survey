@@ -7,7 +7,7 @@ const logoutRouter = require('./routes/logout');
 const indexRouter = require('./routes/index');
 
 app.locals.site = {
-		title: '高校问卷调查系统',
+		title: 			 '高校问卷调查系统',
 		description: '欢迎大家填写问卷。',
 };
 
