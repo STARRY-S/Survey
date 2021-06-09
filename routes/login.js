@@ -7,16 +7,12 @@ let connection = mysql.createConnection({
 	host     : 'localhost',
 	user     : 'starrys',
 	password : 'testpassword',
-    database : 'survey',
+  database : 'survey',
 });
 
 connection.connect((err) => {
-    if (err) throw err;
-    console.log(`Database connect successfully.`);
-});
-
-router.use((req, res, next) => {
-    next();
+  if (err) throw err;
+  console.log(`Database connect successfully.`);
 });
 
 router.get('/', (req, res) => {
@@ -27,7 +23,6 @@ router.get('/', (req, res) => {
         res.render('login');
     }
     else {
-        res.locals.pageTitle = "欢迎回来";
         res.redirect('/');
     }
 });
