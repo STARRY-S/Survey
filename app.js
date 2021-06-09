@@ -33,7 +33,15 @@ app.use((err, req, res, next) => {
   res.status(500).send('出错了！');
 });
 
-const port = 3000
+app.get('/about', (req, res) => {
+	res.render('about');
+});
+
+app.get('/friends', (req, res) => {
+	res.render('friends');
+})
+
+const port = 3000;
 
 // Function to listen on the port
 app.listen(port, () => console.log(`This app is listening on port ${port}`));

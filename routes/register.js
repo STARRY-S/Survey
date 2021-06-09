@@ -66,12 +66,4 @@ router.post('/add/teacher', (req, res) => {
   res.redirect('/');
 });
 
-router.get('/student', (req, res) => {
-  ;
-});
-
-router.get('/student', (req, res) => {
-  ;
-});
-
 module.exports = router;
