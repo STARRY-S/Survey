@@ -1,0 +1,42 @@
+<%- include('../header.ejs') %>
+
+<div class="card">
+<div class="center_box">
+  <h2 style="text-align: cenetr">创建学生账户：</h2>
+  <br><br>
+
+  <form action="/register/add/student" method="post">
+  学号<text style="color: red;">*</text><br>
+	<input type="number" name="student_id" required><br><br>
+
+  电子邮箱<br>
+  <input type="email" name="email"><br><br>
+
+  性别 <text style="color: red;">*</text><br>
+  <select id="login-type" name="sex">
+      <option value="unknow">保密</option>
+      <option value="male">男</option>
+      <option value="female">女</option>
+  </select><br><br/>
+
+  年龄:
+  <input type="number" name="age"><br><br>
+
+  学校<br>
+  <input type="text" name="school"><br><br>
+
+  专业<br>
+  <input type="text" name="profession"><br><br>
+
+  班级<br>
+  <input type="text" name="class"><br><br>
+
+  <input type="submit" value="注册"/>
+	<% if (typeof errorMessage !== 'undefined') { %>
+	<p style="color: red;"><%= errorMessage %></p>
+	<% } %>
+
+</div>
+</div>
+
+<%- include('../footer.ejs') %>

@@ -1,19 +1,7 @@
 const express = require('express');
 const session = require('express-session');
-const router = express.Router();
-const mysql = require('mysql');
-
-let connection = mysql.createConnection({
-	host     : 'localhost',
-	user     : 'starrys',
-	password : 'testpassword',
-  database : 'survey',
-});
-
-connection.connect((err) => {
-  if (err) throw err;
-  console.log(`Database connect successfully.`);
-});
+const mysql   = require('../database');
+const router  = express.Router();
 
 router.get('/', (req, res) => {
 	let loggedin = req.session.loggedin;
@@ -31,28 +19,28 @@ router.post('/auth', (req, res) => {
   let name = req.body.username;
   let pwd  = req.body.password;
   let type = req.body.type;
+	console.log(type);
 
-	let tableName = '';
-	switch(type) {
-		case 'student':
-			tableName = 'students';
-			break;
-		case 'teacher':
-			tableName = 'teachers';
-			break;
-		case 'admin'  :
-			tableName = 'admin';
-		default:
-			tableName = 'students';
-			break;
-	}
+	// let tableName = '';
+	// switch(type) {
+	// 	case 'student':
+	// 		tableName = 'student';
+	// 		break;
+	// 	case 'teacher':
+	// 		tableName = 'teacher';
+	// 		break;
+	// 	case 'admin'  :
+	// 		tableName = 'admin';
+	// 	default:
+	// 		tableName = 'student';
+	// 		break;
+	// }
 
 	// TODO: login via name or email or phone
   if (name && pwd) {
-		connection.query(
-            `select id from ${tableName} ` +
-								`where name="${name}" and password="${pwd}"`,
-            (error, results, fields) =>
+		let sql = `select id from ${type} where ` +
+			`(name="${name}" AND password="${pwd}")`;
+		mysql.query(sql, (error, results, fields) =>
 		{
 			if (error) console.error(error);
 			if (results && results.length > 0) {
