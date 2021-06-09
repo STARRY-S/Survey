@@ -97,6 +97,7 @@ body {
 }
 
 .footer div {
+  margin: 5px;
   padding: 10px;
 }
 
@@ -117,7 +118,7 @@ body {
   color: #acc7c7;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1000px) {
   .leftcolumn, .rightcolumn {
     width: 100%;
     padding: 0;
