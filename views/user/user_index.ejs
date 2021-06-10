@@ -1,0 +1,85 @@
+<!-- <div class="card"> -->
+  <div class="card">
+  <!-- title -->
+  <h1>学生满意度统计（模板）</h1><br>
+
+  <form action="/user/submit" method="post" id="form1">
+
+  第1道填空问题<span style="color: red;">*</span><br>
+  <input type="text" name="question_1" required><br><br>
+
+  第2道填空问题 <span style="color: red;">*</span><br>
+  <input type="text" name="question_2" required><br><br>
+
+  第3道填空问题<span style="color: red;">*</span><br>
+  <input type="text" name="phone" required><br><br>
+
+  第1道选择题 <span style="color: red;">*</span><br>
+  <select id="login-type" name="type">
+      <option value="student">--请选择--</option>
+      <option value="student">第一个答案</option>
+      <option value="teacher">第二个答案</option>
+      <option value="teacher">第三个答案</option>
+  </select><br><br/>
+
+  第1道判断题 <span style="color: red;">*</span><br>
+  <select id="login-type" name="type">
+      <option value="student">--请选择--</option>
+      <option value="student">对</option>
+      <option value="teacher">错</option>
+  </select><br><br/>
+
+  Radio Button <span style="color: red;">*</span><br>
+  <fieldset>
+  <!-- <form action="/user/submit" method="post" id="form2" > -->
+    <input type="radio" id="male" name="gender" value="male">
+    <label for="male">Male</label><br>
+    <input type="radio" id="female" name="gender" value="female">
+    <label for="female">Female</label><br>
+    <input type="radio" id="other" name="gender" value="other">
+    <label for="other">Other</label>
+  <!-- </form><br> -->
+  </fieldset>
+
+  Radio Button2 <span style="color: red;">*</span><br>
+  <fieldset>
+  <!-- <form action="/user/submit" method="post" id="form2" > -->
+    <input type="radio" id="male" name="radio_2" value="male">
+    <label for="male">Male</label><br>
+    <input type="radio" id="female" name="radio_2" value="female">
+    <label for="female">Female</label><br>
+    <input type="radio" id="other" name="radio_2" value="other">
+    <label for="other">Other</label>
+  <!-- </form><br> -->
+  </fieldset>
+
+  多选题样例<br>
+  <fieldset>
+    <label class="container">One
+      <input type="checkbox" name="cb_1">
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="container">Two
+      <input type="checkbox" name="cb_2">
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="container">Three
+      <input type="checkbox" name="cb_3">
+      <span class="checkmark"></span>
+    </label>
+  </fieldset>
+
+    长文本输入框样例<br>
+    <textarea rows = "5" name="textarea_1"></textarea><br>
+
+    <input type="submit" value="提交" onclick="submit"/>
+  </form><br>
+
+  <% if (typeof errorMessage !== 'undefined') { %>
+  <p style="color: red;"><%= errorMessage %></p>
+  <% } %>
+  <p style="color: red;">错误信息样例</p>
+  </div>
+<!-- </div> -->

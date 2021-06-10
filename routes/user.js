@@ -1,15 +1,18 @@
 const express = require('express');
 const session = require('express-session');
-const router = express.Router();
+const mysql   = require('../database');
+const router  = express.Router();
 
 router.get('/', (req, res) => {
   let loggedin = req.session.loggedin;
   res.locals.loggedin = loggedin;
-	if (loggedin) {
-		res.render('index');
-	} else {
-		res.redirect('/login');
-	}
+  console.log("/user");
+	res.send("user");
+});
+
+router.post('/submit', (req, res) => {
+  console.log(req.body);
+  res.json(req.body);
 });
 
 module.exports = router;

@@ -7,10 +7,12 @@ const loginRouter  = require('./routes/login');
 const logoutRouter = require('./routes/logout');
 const indexRouter  = require('./routes/index');
 const regRouter    = require('./routes/register');
+const userRouter   = require('./routes/user');
+const adminRouter  = require('./routes/admin');
 
 app.locals.site = {
 		title: 			 '高校问卷调查系统',
-		description: '这是一条看起来很高大上但没什么用的宣传标语。',
+		description: '这是一条宣传标语。',
 		userType:			'admin',
 };
 
@@ -28,6 +30,8 @@ app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/register', regRouter);
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);

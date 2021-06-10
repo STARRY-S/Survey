@@ -1,0 +1,16 @@
+<%- include('../header.ejs') %>
+
+<div class="card">
+
+  <h1>设置选择题属性</h1>
+
+  <form action="/admin/add_2" method="post">
+  <% for (let i=1; i <= number; i++) { %>
+    选项<%= i %>的内容:
+    <input type="text" name="select_<%= i %>" required><br><br>
+  <% } %>
+  <input type="submit" value="确定">
+  </form>
+</div>
+
+<%- include('../footer.ejs') %>

@@ -1,5 +1,30 @@
 <%- include('header.ejs') %>
 
 <h1>Template</h1>
+<form action="/register/add" method="post">
+用户名（用于登录）<text style="color: red;">*</text><br>
+<input type="text" name="username" placeholder="用户名" required><br><br>
+
+帐号密码 <text style="color: red;">*</text><br>
+<input type="password" name="password" placeholder="密码" required><br><br>
+
+手机号 <text style="color: red;">*</text><br>
+<input type="text" name="phone" required><br><br>
+
+帐号类型 <text style="color: red;">*</text><br>
+<select id="login-type" name="type">
+    <option value="student">学生</option>
+    <option value="teacher">教师</option>
+</select><br><br/>
+
+<input type="submit" value="下一步"/>
+<% if (typeof errorMessage !== 'undefined') { %>
+<p style="color: red;"><%= errorMessage %></p>
+<% } %>
+
+<p class="register">已有帐号?
+  <a class="register" href="/login">点此登录</a></p>
+</form>
+
 
 <%- include('footer.ejs') %>

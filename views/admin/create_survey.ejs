@@ -1,11 +1,37 @@
 <%- include('../header.ejs') %>
 
+<% if (typeof obj !== 'undefined') { %>
 <div class="card">
-<div class="center_box">
-
-  <!-- code here-->
+  <h1>预览问卷</h1>
 
 </div>
+<% } %>
+
+<div class="card">
+
+  <h1>新建调查问卷</h1>
+
+  <form action="/admin/add_1" method="post">
+    题目：
+    <input type="text" name="c_title" required><br>
+
+    <p>题目类型：</p>
+    <input type="radio" id="text" name="c_type" value="input" checked="1">
+    <label for="text">填空题</label><br>
+
+    <input type="radio" id="select" name="c_type" value="select">
+    <label for="select">单选题</label><br>
+
+    <input type="radio" id="mselect" name="c_type" value="multiselect">
+    <label for="mselect">多选题</label><br>
+
+    <fieldset>
+        <p>(如果是多选) 选项的数量:</p>
+        <input type="number" name="q_num" value="3" max="5" min="2">
+    </fieldset>
+
+    <input type="submit" value="添加">
+  </form>
 </div>
 
 <%- include('../footer.ejs') %>

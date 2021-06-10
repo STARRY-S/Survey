@@ -7,7 +7,7 @@
 
   <form action="/register/add/teacher" method="post">
   教师号<text style="color: red;">*</text><br>
-	<input type="number" name="teacher_id" required><br><br>
+	<input type="text" name="teacher_id" required><br><br>
 
   电子邮箱<br>
   <input type="email" name="email"><br><br>
@@ -20,7 +20,7 @@
   </select><br><br/>
 
   年龄:
-  <input type="number" name="age"><br><br>
+  <input type="number" name="age" min="0" max="120"><br><br>
 
   所属院校<br>
   <input type="text" name="school"><br><br>

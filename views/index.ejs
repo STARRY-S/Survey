@@ -5,4 +5,8 @@
   <%- include('admin/admin_index.ejs') %>
 <% } %>
 
+<% if (site.userType === 'student') { %>
+  <%- include('user/user_index.ejs') %>
+<% } %>
+
 <%- include('footer.ejs') %>
