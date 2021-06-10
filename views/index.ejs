@@ -1,11 +1,15 @@
 <%- include('header.ejs') %>
 
 
-<% if (site.userType === 'admin') { %>
+<% if (userType === 'admin') { %>
   <%- include('admin/admin_index.ejs') %>
 <% } %>
 
-<% if (site.userType === 'student') { %>
+<% if (userType === 'student') { %>
+  <%- include('user/user_index.ejs') %>
+<% } %>
+
+<% if (userType === 'teacher') { %>
   <%- include('user/user_index.ejs') %>
 <% } %>
 

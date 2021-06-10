@@ -4,22 +4,44 @@ const mysql   = require('../database');
 const router  = express.Router();
 
 router.get('/', (req, res) => {
-  let loggedin = req.session.loggedin;
-  res.locals.loggedin = loggedin;
 	res.send("admin");
 });
 
 router.get('/add', (req, res) => {
+  let loggedin = req.session.loggedin;
+  let userType = req.session.type || 'student';
+
+  if (!req.session.loggedin || userType !== 'admin') {
+    res.status(500).render('error');
+    return;
+  }
+
   res.locals.pageTitle = "新建问卷";
   res.render('admin/create_survey');
 });
 
 router.post('/add_clear', (req, res) => {
+  let loggedin = req.session.loggedin;
+  let userType = req.session.type || 'student';
+
+  if (!req.session.loggedin || userType !== 'admin') {
+    res.status(500).render('error');
+    return;
+  }
+
   req.session.obj_list = [];
   req.render('admin/create_survey');
 });
 
 router.post('/add_1', (req, res) => {
+  let loggedin = req.session.loggedin;
+  let userType = req.session.type || 'student';
+
+  if (!req.session.loggedin || userType !== 'admin') {
+    res.status(500).render('error');
+    return;
+  }
+
   if (typeof req.session.obj_list === 'undefined') {
     req.session.obj_list = [];
   }
@@ -45,6 +67,14 @@ router.post('/add_1', (req, res) => {
 });
 
 router.post('/add_2', (req, res) => {
+  let loggedin = req.session.loggedin;
+  let userType = req.session.type || 'student';
+
+  if (!req.session.loggedin || userType !== 'admin') {
+    res.status(500).render('error');
+    return;
+  }
+
   let list = req.session.obj_list;
   // console.log(list);
   let obj = list[list.length - 1];

@@ -13,7 +13,6 @@ const adminRouter  = require('./routes/admin');
 app.locals.site = {
 		title: 			 '高校问卷调查系统',
 		description: '这是一条宣传标语。',
-		userType:			'admin',
 };
 
 app.set('view engine', 'ejs');
@@ -35,7 +34,7 @@ app.use('/admin', adminRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('出错了！');
+  res.status(500).render('error');
 });
 
 app.get('/about', (req, res) => {

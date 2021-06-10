@@ -31,6 +31,7 @@ router.post('/auth', (req, res) => {
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = name;
+				req.session.type = type;
 				res.locals.userType  = type;
 				res.redirect('/');
 			} else {
