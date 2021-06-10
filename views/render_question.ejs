@@ -1,2 +1,30 @@
 
-<% for (let obj in obj_list )
+<% for (let i = 1; i <= obj_list.length; ++i ) { %>
+  <% let obj = obj_list[i-1] %>
+  <% if (obj.type === 'input') { %>
+    <%= obj.title %>： <span style="color: red;">*</span><br>
+    <input type="text" name="question_<%= i %>" required><br><br>
+  <% } %>
+
+  <% if (obj.type === 'select') { %>
+    <%= obj.title %>： <span style="color: red;">*</span><br>
+    <select name="question_<%= i %>">
+      <% for (let j = 1; j <= obj.q_list.length; ++j) { %>
+        <option value="select_<%= i %>_<%= j %>"><%= obj.q_list[j-1] %></option>
+      <% } %>
+    </select><br><br/>
+  <% } %>
+
+  <% if (obj.type === 'multiselect') { %>
+    <%= obj.title %>： <span style="color: red;">*</span><br>
+    <fieldset>
+      <% for (let j = 1; j <= obj.q_list.length; ++j) { %>
+        <label class="container"><%= obj.q_list[j-1] %>
+          <input type="checkbox" name=`cb_${i}_${j}`>
+          <span class="checkmark"></span>
+        </label>
+      <% } %>
+    </fieldset>
+  <% } %>
+
+<% } %>

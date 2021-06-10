@@ -1,8 +1,10 @@
 <%- include('../header.ejs') %>
 
-<% if (typeof obj !== 'undefined') { %>
+<% if (typeof obj_list !== 'undefined') { %>
 <div class="card">
   <h1>预览问卷</h1>
+
+  <%- include('../render_question.ejs') %>
 
 </div>
 <% } %>
@@ -30,7 +32,10 @@
         <input type="number" name="q_num" value="3" max="5" min="2">
     </fieldset>
 
-    <input type="submit" value="添加">
+    <input type="submit" value="添加题目">
+  </form>
+  <form action="/admin/add_clear" method="post">
+    <input style="background-color: #9dbabb;" type="submit" value="清空列表">
   </form>
 </div>
 

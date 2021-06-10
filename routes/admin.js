@@ -14,6 +14,11 @@ router.get('/add', (req, res) => {
   res.render('admin/create_survey');
 });
 
+router.post('/add_clear', (req, res) => {
+  req.session.obj_list = [];
+  req.render('admin/create_survey');
+});
+
 router.post('/add_1', (req, res) => {
   if (typeof req.session.obj_list === 'undefined') {
     req.session.obj_list = [];
@@ -33,8 +38,8 @@ router.post('/add_1', (req, res) => {
     req.session.obj_list.push(obj);
     res.render('admin/add_select');
   } else {
-    res.locals.obj = obj;
     req.session.obj_list.push(obj);
+    res.locals.obj_list = req.session.obj_list;
     res.render('admin/create_survey');
   }
 });
@@ -48,9 +53,11 @@ router.post('/add_2', (req, res) => {
     obj.q_list.push(req.body[`select_${i}`]);
   }
 
-  // console.log(obj);
+  list[list.length - 1] = obj;
+  // console.log(list);
 
-  res.locals.obj = obj;
+  req.session.obj_list = list;
+  res.locals.obj_list = list;
   res.render('admin/create_survey');
 });
 

@@ -120,10 +120,6 @@ input[type=radio]
   transform: rotate(45deg);
 }
 
-button {
-
-}
-
 input[type=submit] {
   width: 100%;
   background-color: #0cacde;
