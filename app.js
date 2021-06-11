@@ -34,7 +34,7 @@ app.use('/admin', adminRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).render('error');
+  res.status(500).render('error', { errorCode: 500 });
 });
 
 app.get('/about', (req, res) => {
@@ -43,6 +43,10 @@ app.get('/about', (req, res) => {
 
 app.get('/friends', (req, res) => {
 	res.render('friends');
+})
+
+app.get('/200', (req, res) => {
+	res.status(200).render('error', { errorCode: 200 } );
 })
 
 const port = 3000;

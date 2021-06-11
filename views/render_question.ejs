@@ -1,6 +1,6 @@
 
-<% for (let i = 1; i <= obj_list.length; ++i ) { %>
-  <% let obj = obj_list[i-1] %>
+<% for (let i = 1; i < obj_list.length; ++i ) { %>
+  <% let obj = obj_list[i] %>
   <% if (obj.type === 'input') { %>
     <%= obj.title %>： <span style="color: red;">*</span><br>
     <input type="text" name="question_<%= i %>" required><br><br>
@@ -24,7 +24,7 @@
           <span class="checkmark"></span>
         </label>
       <% } %>
-    </fieldset>
+    </fieldset><br>
   <% } %>
 
 <% } %>

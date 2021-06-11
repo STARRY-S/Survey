@@ -1,42 +1,93 @@
 <%- include('../header.ejs') %>
 
+<script type="text/javascript">
+function setAnswerNum() {
+  let textSelect   = document.getElementById('text').checked || false;
+  let singleSelect = document.getElementById('select').checked || false;
+  let multiSelect  = document.getElementById('mselect').checked || false;
+
+  let container = document.getElementById('select_num');
+
+  if (singleSelect || multiSelect) {
+    if (container.hasChildNodes()) {
+      return;
+    }
+
+    const label = document.createTextNode("选项的数量 (2至5)：");
+    const numInput = document.createElement("input");
+    numInput.type = "number";
+    numInput.name = "q_num";
+    numInput.value = "3";
+    numInput.max = "5";
+    numInput.min = "2";
+
+    container.appendChild(label);
+    container.appendChild(numInput);
+  } else if (textSelect) {
+    while (container.hasChildNodes()) {
+      container.removeChild(container.firstChild);
+    }
+  }
+}
+</script>
+
 <% if (typeof obj_list !== 'undefined') { %>
-<div class="card">
-  <h1>预览问卷</h1>
+  <% if (obj_list.length > 1) { %>
 
-  <%- include('../render_question.ejs') %>
+    <div class="card">
+      <h1>预览问卷</h1>
 
-</div>
+      <%- include('../render_question.ejs') %>
+
+      <form action="/admin/submit" method="post">
+      <button onclick="postSurvey()">发布问卷</button>
+      </form>
+
+    </div>
+
+  <% } %>
 <% } %>
 
 <div class="card">
 
-  <h1>新建调查问卷</h1>
+  <% if (typeof obj_list === 'undefined' || obj_list.length < 1) { %>
+    <h1>新建调查问卷</h1>
+  <% } else { %>
+    <h1>添加题目</h1>
+  <% } %>
 
   <form action="/admin/add_1" method="post">
-    题目：
+    <% if (typeof obj_list === 'undefined') { %>
+      <p>问卷标题：</p>
+      <input type="text" id="s_title" name="s_title" required><br>
+      <hr>
+    <% } %>
+
+    新增题目：
     <input type="text" name="c_title" required><br>
 
     <p>题目类型：</p>
-    <input type="radio" id="text" name="c_type" value="input" checked="1">
+    <input type="radio" id="text" name="c_type"
+      value="input" onclick="setAnswerNum()" checked>
     <label for="text">填空题</label><br>
 
-    <input type="radio" id="select" name="c_type" value="select">
+    <input type="radio" id="select" name="c_type"
+      value="select" onclick="setAnswerNum()">
     <label for="select">单选题</label><br>
 
-    <input type="radio" id="mselect" name="c_type" value="multiselect">
-    <label for="mselect">多选题</label><br>
+    <input type="radio" id="mselect" name="c_type"
+      value="multiselect"  onclick="setAnswerNum()">
+    <label for="mselect">多选题</label><br><br>
 
-    <fieldset>
-        <p>(如果是多选) 选项的数量:</p>
-        <input type="number" name="q_num" value="3" max="5" min="2">
-    </fieldset>
+    <div id="select_num"></div>
 
     <input type="submit" value="添加题目">
   </form>
+
   <form action="/admin/add_clear" method="post">
-    <input style="background-color: #9dbabb;" type="submit" value="清空列表">
+  <button class="important">清空列表</button>
   </form>
+
 </div>
 
 <%- include('../footer.ejs') %>

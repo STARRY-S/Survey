@@ -7,8 +7,8 @@ router.get('/', (req, res) => {
   if (loggedin) {
     req.session.loggedin = false;
     req.session.destroy();
-    res.redirect("/login");
   }
+  res.redirect("/login");
 });
 
 module.exports = router;

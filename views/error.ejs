@@ -1,9 +1,20 @@
 <%- include('./header.ejs') %>
 
 <div class="card">
-  <div class="center_box">
-      <h1>出错啦</h1>
-  </div>
+
+  <% if (typeof errorCode !== 'undefined') { %>
+    <% if (errorCode >= 200 && errorCode <= 299) { %>
+      <h1>Server Response: <%= errorCode %></h1>
+    <% } else { %>
+      <h1>出错啦！</h1>
+    <% } %>
+
+    <img class="center" src="https://http.cat/<%= errorCode %>"></img>
+    <p>图片源自: <a href="https://http.cat">http.cat</a></p>
+  <% } else { %>
+    <h1>出错啦！</h1>
+  <% } %>
+
 </div>
 
 <%- include('./footer.ejs') %>

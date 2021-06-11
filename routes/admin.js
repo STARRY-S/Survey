@@ -1,7 +1,9 @@
 const express = require('express');
 const session = require('express-session');
 const mysql   = require('../database');
+const fs 			= require('fs');
 const router  = express.Router();
+const hashCode= require('../hashcode');
 
 router.get('/', (req, res) => {
 	res.send("admin");
@@ -12,12 +14,14 @@ router.get('/add', (req, res) => {
   let userType = req.session.type || 'student';
 
   if (!req.session.loggedin || userType !== 'admin') {
-    res.status(500).render('error');
+    res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
-  res.locals.pageTitle = "新建问卷";
-  res.render('admin/create_survey');
+  res.render('admin/create_survey', {
+		pageTitle: "新建问卷",
+		loggedin: loggedin,
+	});
 });
 
 router.post('/add_clear', (req, res) => {
@@ -25,12 +29,15 @@ router.post('/add_clear', (req, res) => {
   let userType = req.session.type || 'student';
 
   if (!req.session.loggedin || userType !== 'admin') {
-    res.status(500).render('error');
+    res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
   req.session.obj_list = [];
-  req.render('admin/create_survey');
+  res.render('admin/create_survey', {
+		pageTitle: "新建问卷",
+		loggedin: loggedin,
+	});
 });
 
 router.post('/add_1', (req, res) => {
@@ -38,12 +45,15 @@ router.post('/add_1', (req, res) => {
   let userType = req.session.type || 'student';
 
   if (!req.session.loggedin || userType !== 'admin') {
-    res.status(500).render('error');
+    res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
-  if (typeof req.session.obj_list === 'undefined') {
+	let s_title = req.body.s_title;
+  if (typeof req.session.obj_list === 'undefined'
+			|| req.session.obj_list.length < 1) {
     req.session.obj_list = [];
+		req.session.obj_list.push(s_title);
   }
 
   let obj = {
@@ -51,18 +61,23 @@ router.post('/add_1', (req, res) => {
     type: req.body.c_type,
   };
 
-  // console.log(obj.type);
-  res.locals.pageTitle = "设置选择题";
+  // console.log(req.session.obj_list);
   if (obj.type !== "input") {
     obj.q_num = req.body.q_num;
     obj.q_list = [];
     res.locals.number = obj.q_num;
     req.session.obj_list.push(obj);
-    res.render('admin/add_select');
+    res.render('admin/add_select', {
+			pageTitle: "设置选项",
+			loggedin: loggedin,
+		});
   } else {
     req.session.obj_list.push(obj);
-    res.locals.obj_list = req.session.obj_list;
-    res.render('admin/create_survey');
+    res.render('admin/create_survey', {
+			pageTitle: "新建问卷",
+			loggedin: loggedin,
+			obj_list: req.session.obj_list,
+		});
   }
 });
 
@@ -71,12 +86,20 @@ router.post('/add_2', (req, res) => {
   let userType = req.session.type || 'student';
 
   if (!req.session.loggedin || userType !== 'admin') {
-    res.status(500).render('error');
+    res.status(403).render('error', {
+			errorCode: 403,
+		});
     return;
   }
 
-  let list = req.session.obj_list;
-  // console.log(list);
+	let list = req.session.obj_list;
+	if (list.length <= 1) {
+		res.status(400).render('error', {
+			errorCode: 400,
+		});
+		return;
+	}
+
   let obj = list[list.length - 1];
 
   for (let i = 1; i <= obj.q_num; i++) {
@@ -84,11 +107,40 @@ router.post('/add_2', (req, res) => {
   }
 
   list[list.length - 1] = obj;
-  // console.log(list);
-
   req.session.obj_list = list;
-  res.locals.obj_list = list;
-  res.render('admin/create_survey');
+  res.render('admin/create_survey', {
+		pageTitle: "新建问卷",
+		loggedin: loggedin,
+		obj_list: req.session.obj_list,
+	});
+});
+
+router.post('/submit', (req, res) => {
+	let loggedin = req.session.loggedin;
+  let userType = req.session.type || 'student';
+
+  if (!req.session.loggedin || userType !== 'admin') {
+    res.status(403).render('error', {
+			errorCode: 403,
+		});
+    return;
+  }
+
+	let obj_list = req.session.obj_list;
+	let survey_name = obj_list[0] || 'default';
+	let filename = 'data/' + hashCode(survey_name) + '.json';
+
+	let sql = `INSERT INTO question (title, filename) VALUES ("${obj_list[0]}",` +
+			` "${filename}")`;
+	fs.writeFile(filename, JSON.stringify(obj_list), function (err) {
+	  if (err) console.error(err);
+
+		mysql.query(sql, (error, results, fields) => {
+			if (error) console.error(error);
+			res.redirect("/");
+		});
+
+	});
 });
 
 module.exports = router;

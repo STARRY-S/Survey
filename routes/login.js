@@ -7,8 +7,9 @@ router.get('/', (req, res) => {
 	let loggedin = req.session.loggedin;
 	res.locals.loggedin = loggedin;
     if (!loggedin) {
-        res.locals.pageTitle = "请登录";
-        res.render('login');
+        res.render('login', {
+					pageTitle: "请登录",
+				});
     }
     else {
         res.redirect('/');
@@ -19,7 +20,6 @@ router.post('/auth', (req, res) => {
   let name = req.body.username;
   let pwd  = req.body.password;
   let type = req.body.type;
-	// console.log(type);
 
 	// TODO: login via name or email or phone
   if (name && pwd) {
@@ -35,16 +35,18 @@ router.post('/auth', (req, res) => {
 				res.locals.userType  = type;
 				res.redirect('/');
 			} else {
-				res.locals.pageTitle = "登录失败";
-				res.locals.errorMessage = "请检查帐号及密码以及用户类型是否正确";
-				res.render('login');
+				res.render('login', {
+					pageTitle: "登录失败",
+					errorMessage: "请检查帐号及密码以及用户类型是否正确",
+				});
 			}
 			res.end();
 		});
 	} else {
-		res.locals.pageTitle = "登录失败";
-		res.locals.errorMessage = "请输入用户名和密码";
-		res.render('login');
+		res.render('login', {
+			pageTitle: "登录失败",
+			errorMessage: "请检查帐号及密码以及用户类型是否正确",
+		});
 		res.end();
 	}
 });

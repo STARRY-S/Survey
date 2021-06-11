@@ -5,11 +5,7 @@
   <%- include('admin/admin_index.ejs') %>
 <% } %>
 
-<% if (userType === 'student') { %>
-  <%- include('user/user_index.ejs') %>
-<% } %>
-
-<% if (userType === 'teacher') { %>
+<% if (userType === 'student' || userType === 'teacher') { %>
   <%- include('user/user_index.ejs') %>
 <% } %>
 
