@@ -1,9 +1,11 @@
 .card {
   font-size: 16px;
   background-color: white;
-  padding: 20px;
+  padding: 25px;
   margin-top: 20px;
   border-radius: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .center {

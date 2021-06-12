@@ -6,9 +6,20 @@
       <% let title = question_list[i] %>
       <div class="card">
         <h1><%= title %></h1>
-        <p><a href="/?<%= title %>">单击此处</a>填写问卷。</p>
+        <p><a href="/?title=<%= title %>">单击此处</a>填写问卷。</p>
       </div>
     <% } %>
 
   <% } %>
+<% } else if (typeof obj_list !== 'undefined') { %>
+
+<div class="card">
+
+  <h1><%= obj_list[0] %></h1>
+  <form>
+  <%- include('../render_question') %>
+  <form>
+
+</div>
+
 <% } %>

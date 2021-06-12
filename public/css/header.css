@@ -51,8 +51,9 @@ body {
 
 .leftcolumn {
   float: left;
-  width: 75%;
+  width: 73%;
   padding: 10px;
+  margin-left: 20px;
   background-color: #dadada;
   box-shadow: 0 0.5em 1em 0.5em rgba(0,0,0,0.19);
 }
@@ -74,8 +75,8 @@ body {
   float: left;
   width: 25%;
   background-color: rgba(#f2f2f2, 0.25);
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 15px;
+  padding-right: 15px;
   /* box-shadow: 0 0.5em 1em 0.5em rgba(0,0,0,0.19); */
 }
 
@@ -131,6 +132,7 @@ body {
 
 @media only screen and (max-width: 1000px) {
   .leftcolumn, .rightcolumn {
+    margin-left: 0px;
     width: 100%;
     padding: 0;
   }

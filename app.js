@@ -38,11 +38,11 @@ app.use((err, req, res, next) => {
 });
 
 app.get('/about', (req, res) => {
-	res.render('about');
+	res.render('about', { loggedin: req.session.loggedin });
 });
 
 app.get('/friends', (req, res) => {
-	res.render('friends');
+	res.render('friends', { loggedin: req.session.loggedin });
 })
 
 app.get('/200', (req, res) => {
