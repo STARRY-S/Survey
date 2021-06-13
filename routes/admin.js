@@ -9,26 +9,30 @@ router.get('/', (req, res) => {
 	res.send("admin");
 });
 
-router.get('/add', (req, res) => {
-  let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
+const validAdmin = (user) => {
+	if (typeof user === 'undefined' || user.type !== 'admin') {
+		return false;
+	}
+	return true;
+}
 
-  if (!req.session.loggedin || userType !== 'admin') {
+router.get('/add', (req, res) => {
+	const user = req.session.user;
+
+  if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
-		loggedin: loggedin,
 	});
 });
 
 router.post('/add_clear', (req, res) => {
-  let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
+	const user = req.session.user;
 
-  if (!req.session.loggedin || userType !== 'admin') {
+  if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
@@ -36,15 +40,13 @@ router.post('/add_clear', (req, res) => {
   req.session.obj_list = [];
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
-		loggedin: loggedin,
 	});
 });
 
 router.post('/add_1', (req, res) => {
-  let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
+	const user = req.session.user;
 
-  if (!req.session.loggedin || userType !== 'admin') {
+  if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
@@ -61,7 +63,6 @@ router.post('/add_1', (req, res) => {
     type: req.body.c_type,
   };
 
-  // console.log(req.session.obj_list);
   if (obj.type !== "input") {
     obj.q_num = req.body.q_num;
     obj.q_list = [];
@@ -69,26 +70,21 @@ router.post('/add_1', (req, res) => {
     req.session.obj_list.push(obj);
     res.render('admin/add_select', {
 			pageTitle: "设置选项",
-			loggedin: loggedin,
 		});
   } else {
     req.session.obj_list.push(obj);
     res.render('admin/create_survey', {
 			pageTitle: "新建问卷",
-			loggedin: loggedin,
 			obj_list: req.session.obj_list,
 		});
   }
 });
 
 router.post('/add_2', (req, res) => {
-  let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
+	const user = req.session.user;
 
-  if (!req.session.loggedin || userType !== 'admin') {
-    res.status(403).render('error', {
-			errorCode: 403,
-		});
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
@@ -110,19 +106,15 @@ router.post('/add_2', (req, res) => {
   req.session.obj_list = list;
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
-		loggedin: loggedin,
 		obj_list: req.session.obj_list,
 	});
 });
 
 router.post('/submit', (req, res) => {
-	let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
+	const user = req.session.user;
 
-  if (!req.session.loggedin || userType !== 'admin') {
-    res.status(403).render('error', {
-			errorCode: 403,
-		});
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
@@ -137,6 +129,7 @@ router.post('/submit', (req, res) => {
 
 		mysql.query(sql, (error, results, fields) => {
 			if (error) console.error(error);
+			req.session.obj_list = [];
 			res.redirect("/");
 		});
 

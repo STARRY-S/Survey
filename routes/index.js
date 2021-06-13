@@ -5,14 +5,13 @@ const fs      = require('fs');
 const router = express.Router();
 
 const questionPage = (req, res, title) => {
-  if (title === undefined) {
-    throw "unknow title";
+  if (typeof title === 'undefined' || title == null) {
+    title = "unknow title";
   }
 
   let sql = `select filename from question where title="${title}"`;
   mysql.query(sql, (error, results, fields) => {
     if (error) console.error(error);
-
     let filename = results[0].filename;
 
     fs.readFile(filename, (err, data) => {
@@ -26,9 +25,9 @@ const questionPage = (req, res, title) => {
 
 router.get('/', (req, res) => {
   let loggedin = req.session.loggedin;
-  let userType = req.session.type || 'student';
-  res.locals.userType = userType;
-  res.locals.loggedin = loggedin;
+  // let userType = req.session.type || 'student';
+  // res.locals.userType = userType;
+  // res.locals.loggedin = loggedin;
 	if (!loggedin) {
 		res.redirect('/login');
     return;

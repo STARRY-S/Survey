@@ -6,7 +6,11 @@ const mysql   = require('../database');
 // register page
 router.get('/', (req, res) => {
   let loggedin = req.session.loggedin;
-  res.render('register/register');
+  if (res.loggedin) {
+    res.redirect("/");
+  } else {
+    res.render('register/register');
+  }
 });
 
 router.post('/add', (req, res) => {

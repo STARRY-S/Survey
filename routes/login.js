@@ -5,13 +5,11 @@ const router  = express.Router();
 
 router.get('/', (req, res) => {
 	let loggedin = req.session.loggedin;
-	res.locals.loggedin = loggedin;
     if (!loggedin) {
         res.render('login', {
 					pageTitle: "请登录",
 				});
-    }
-    else {
+    } else {
         res.redirect('/');
     }
 });
@@ -30,9 +28,12 @@ router.post('/auth', (req, res) => {
 			if (error) console.error(error);
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
-				req.session.username = name;
-				req.session.type = type;
-				res.locals.userType  = type;
+				// create a user object which stores username and usertype.
+				req.session.user = {
+					name: name,
+					type: type,
+				};
+				// res.locals.user = req.session.user;
 				res.redirect('/');
 			} else {
 				res.render('login', {
@@ -40,14 +41,14 @@ router.post('/auth', (req, res) => {
 					errorMessage: "请检查帐号及密码以及用户类型是否正确",
 				});
 			}
-			res.end();
+			// res.end();
 		});
 	} else {
 		res.render('login', {
 			pageTitle: "登录失败",
 			errorMessage: "请检查帐号及密码以及用户类型是否正确",
 		});
-		res.end();
+		// res.end();
 	}
 });
 

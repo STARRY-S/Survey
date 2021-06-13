@@ -5,7 +5,7 @@ const router  = express.Router();
 
 router.get('/', (req, res) => {
   let loggedin = req.session.loggedin;
-  res.locals.loggedin = loggedin;
+  // res.locals.loggedin = loggedin;
   console.log("/user");
 	res.send("user");
 });

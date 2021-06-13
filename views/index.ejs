@@ -1,12 +1,13 @@
 <%- include('header.ejs') %>
 
+<% if (typeof user !== 'undefined') { %>
+  <% if (user.type === 'admin') { %>
+    <%- include('admin/admin_index.ejs') %>
+  <% } %>
 
-<% if (userType === 'admin') { %>
-  <%- include('admin/admin_index.ejs') %>
-<% } %>
-
-<% if (userType === 'student' || userType === 'teacher') { %>
-  <%- include('user/user_index.ejs') %>
+  <% if (user.type === 'student' || user.type === 'teacher') { %>
+    <%- include('user/user_index.ejs') %>
+  <% } %>
 <% } %>
 
 <%- include('footer.ejs') %>
