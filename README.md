@@ -70,7 +70,7 @@ create table question (
 );
 ```
 
-Edit `database.js` for your database user name and password.
+Edit `database.js` according to the username and password you set.
 
 ```
 $ git clone https://github.com/STARRY-S/Survey.git
@@ -83,6 +83,6 @@ You can edit default port number in `app.js`.
 
 # Others
 
-This project is just for learning, and may be unsafe and unstable to use.
+This project is just for learning purposes, and may be unsafe and unstable.
 
 > License MIT
