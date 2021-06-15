@@ -16,7 +16,7 @@
       const port = window.location.port || '';
       new QRCode(
         document.getElementById("qrcode"), {
-          text: port == '' ? `${hostname}` : `${hostname}:${port}`,
+          text: 'http://' + port == '' ? `${hostname}` : `${hostname}:${port}`,
         });
     </script>
 
