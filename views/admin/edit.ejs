@@ -1,0 +1,32 @@
+<%- include('../header.ejs') %>
+
+<% if (typeof question_list !== 'undefined') { %>
+  <% if (question_list.length > 0) { %>
+
+    <% for (let i = question_list.length - 1; i >= 0; --i ) { %>
+      <% let title = question_list[i] %>
+      <div class="card">
+        <h1><%= title %></h1>
+        <hr>
+        <p><a href="/admin/edit?edit_title=<%= title %>">单击此处</a>查看问卷。</p>
+      </div>
+    <% } %>
+
+  <% } %>
+<% } else if (typeof obj_list !== 'undefined') { %>
+
+  <div class="card">
+
+    <h1><%= obj_list[0] %></h1>
+    <hr>
+    <%- include('../render_question') %>
+
+    <form action="/admin/delete?edit_title=<%= title %>" method="post">
+    <button class="important">删除此问卷</button>
+    <form>
+
+  </div>
+
+<% } %>
+
+<%- include('../footer.ejs') %>

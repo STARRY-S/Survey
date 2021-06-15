@@ -1,8 +1,27 @@
-<%- include('/header.ejs') %>
+<%- include('./header.ejs') %>
 
 <div class="card">
 
+  <% if (typeof dialog_obj !== 'undefined') { %>
+  <div class="center_box">
+
+    <h1><%= dialog_obj.dialog_title %></h1>
+    <hr>
+
+    <% if (typeof dialog_obj.message !== 'undefined') { %>
+    <p><%= dialog_obj.message %></p>
+    <% } %>
+
+    <form method="post" action="/dialog/confirm">
+    <button name="confirm" class="important">确认</button>
+    </form>
+    <form method="post" action="/dialog/cancel">
+    <button name="cancel">取消</button>
+    </form>
+
+  </div>
+  <% } %>
 
 </div>
 
-<%- include('/footer.ejs') %>
+<%- include('./footer.ejs') %>

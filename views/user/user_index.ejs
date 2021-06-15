@@ -6,6 +6,7 @@
       <% let title = question_list[i] %>
       <div class="card">
         <h1><%= title %></h1>
+        <hr>
         <p><a href="/?title=<%= title %>">单击此处</a>填写问卷。</p>
       </div>
     <% } %>
@@ -16,9 +17,20 @@
 <div class="card">
 
   <h1><%= obj_list[0] %></h1>
+  <hr>
   <form>
   <%- include('../render_question') %>
   <form>
+
+</div>
+
+<% } else { %>
+
+<div class="card">
+
+  <h1>Oops!管理员还没有添加任何调查问卷</h1>
+  <hr>
+  <p>敬请期待~</p>
 
 </div>
 

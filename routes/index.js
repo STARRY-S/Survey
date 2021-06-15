@@ -6,7 +6,7 @@ const router = express.Router();
 
 const questionPage = (req, res, title) => {
   if (typeof title === 'undefined' || title == null) {
-    title = "unknow title";
+    title = "*";
   }
 
   let sql = `select filename from question where title="${title}"`;
@@ -17,24 +17,21 @@ const questionPage = (req, res, title) => {
     fs.readFile(filename, (err, data) => {
       const obj_list = JSON.parse(data);
       res.locals.obj_list = obj_list;
-      // console.log(obj_list);
       res.render('index');
     });
   });
 };
 
 router.get('/', (req, res) => {
-  let loggedin = req.session.loggedin;
-  // let userType = req.session.type || 'student';
-  // res.locals.userType = userType;
-  // res.locals.loggedin = loggedin;
-	if (!loggedin) {
-		res.redirect('/login');
-    return;
-	}
+  const title = req.query.title;
+  const loggedin = req.session.loggedin;
 
-  // console.log(req.query);
-  if (typeof req.query.title !== 'undefined') {
+  if (!loggedin) {
+    res.redirect(title ? `/login?title=${title}` : `/login`);
+    return;
+  }
+
+  if (typeof title !== 'undefined') {
     questionPage(req, res, req.query.title);
     return;
   }
@@ -49,6 +46,24 @@ router.get('/', (req, res) => {
     }
     res.render("index", { question_list: question_list } );
   });
+});
+
+router.get('/invite', (req, res) => {
+  res.render('invite', {
+    pageTitle: "分享链接",
+  });
+});
+
+router.get('/about', (req, res) => {
+	res.render('about', { loggedin: req.session.loggedin });
+});
+
+router.get('/friends', (req, res) => {
+	res.render('friends', { loggedin: req.session.loggedin });
+});
+
+router.get('/error', (req, res) => {
+	res.status(200).render('error', { errorCode: 200 } );
 });
 
 module.exports = router;

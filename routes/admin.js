@@ -5,6 +5,26 @@ const fs 			= require('fs');
 const router  = express.Router();
 const hashCode= require('../hashcode');
 
+const questionPage = (req, res, title) => {
+  if (typeof title === 'undefined' || title == null) {
+    title = "*";
+  }
+
+  let sql = `select filename from question where title="${title}"`;
+  mysql.query(sql, (error, results, fields) => {
+    if (error) console.error(error);
+    let filename = results[0].filename;
+
+    fs.readFile(filename, (err, data) => {
+      const obj_list = JSON.parse(data);
+      res.locals.obj_list = obj_list;
+      res.render('admin/edit', {
+        title: title,
+      });
+    });
+  });
+};
+
 router.get('/', (req, res) => {
 	res.send("admin");
 });
@@ -27,6 +47,35 @@ router.get('/add', (req, res) => {
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
 	});
+});
+
+router.get('/edit', (req, res) => {
+	const user = req.session.user;
+
+	if (!validAdmin(user)) {
+		res.status(403).render('error', { errorCode: 403 });
+		return;
+	}
+
+	if (typeof req.query.edit_title !== 'undefined') {
+    questionPage(req, res, req.query.edit_title);
+    return;
+  }
+
+	let sql = `select title from question`;
+  mysql.query(sql, (error, results, fields) => {
+    if (error) console.error(error);
+
+    let question_list = [];
+    for (let i = 0; i < results.length; ++i) {
+      question_list.push(results[i].title);
+    }
+    res.render("admin/edit", {
+			title: "查看已发布的问卷",
+			question_list: question_list
+		});
+  });
+
 });
 
 router.post('/add_clear', (req, res) => {
@@ -56,7 +105,8 @@ router.post('/add_1', (req, res) => {
 			|| req.session.obj_list.length < 1) {
     req.session.obj_list = [];
 		req.session.obj_list.push(s_title);
-  }
+  }      // console.log(obj_list);
+
 
   let obj = {
     title: req.body.c_title,
@@ -132,8 +182,34 @@ router.post('/submit', (req, res) => {
 			req.session.obj_list = [];
 			res.redirect("/");
 		});
-
 	});
+});
+
+router.post('/delete', (req, res) => {
+	const user = req.session.user;
+
+	if (!validAdmin(user)) {
+		res.status(403).render('error', {errorCode: 403});
+		return;
+	}
+
+	const title = req.query.edit_title;
+	if (title === undefined) {
+		res.render('error', {errorCode: 500});
+	}
+
+  // store dialog information into user session.
+  const obj = {
+    dialog_title: "是否要删除此问卷？",
+    message: `"${title}" 将被删除，此操作无法恢复！`,
+    action: 'delete',
+    data: `${title}`,
+  };
+
+  req.session.dialog = obj;
+	res.render('dialog', {
+    dialog_obj: obj,
+  });
 });
 
 module.exports = router;

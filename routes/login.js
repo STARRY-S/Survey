@@ -4,10 +4,12 @@ const mysql   = require('../database');
 const router  = express.Router();
 
 router.get('/', (req, res) => {
-	let loggedin = req.session.loggedin;
+	const title = req.query.title;
+	const loggedin = req.session.loggedin;
     if (!loggedin) {
         res.render('login', {
 					pageTitle: "请登录",
+					surveyName: title,
 				});
     } else {
         res.redirect('/');
@@ -15,9 +17,10 @@ router.get('/', (req, res) => {
 });
 
 router.post('/auth', (req, res) => {
-  let name = req.body.username;
-  let pwd  = req.body.password;
-  let type = req.body.type;
+	const title = req.query.title;
+  const name  = req.body.username;
+  const pwd   = req.body.password;
+  const type  = req.body.type;
 
 	// TODO: login via name or email or phone
   if (name && pwd) {
@@ -34,7 +37,7 @@ router.post('/auth', (req, res) => {
 					type: type,
 				};
 				// res.locals.user = req.session.user;
-				res.redirect('/');
+				res.redirect(title ? `/?title=${title}` : '/');
 			} else {
 				res.render('login', {
 					pageTitle: "登录失败",

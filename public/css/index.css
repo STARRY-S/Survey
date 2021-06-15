@@ -9,6 +9,7 @@
 }
 
 .center {
+  text-align: center;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -17,8 +18,10 @@
 
 hr {
   text-align: left;
-  color: #a1a1a1;
-  margin: 5% 0%;
+  border: 0;
+  border-top: 1px solid #eee;
+  margin-top: 0px;
+  margin-bottom: 20px;
 }
 
 a {
@@ -27,7 +30,7 @@ a {
 }
 
 a:hover {
-  color: #08a7a7;
+  color: #058080;
 }
 
 form {
@@ -224,6 +227,17 @@ a.register {
   padding: 3px;
   color: #45b1e6;
   /* text-align: center; */
+}
+
+fieldset {
+  display: block;
+  margin-top: 1.25em;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding-bottom: 0.625em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  border: 1px solid #d5d5d5;
 }
 
 @media only screen and (max-width: 1500px) {

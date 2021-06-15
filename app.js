@@ -9,6 +9,7 @@ const indexRouter  = require('./routes/index');
 const regRouter    = require('./routes/register');
 const userRouter   = require('./routes/user');
 const adminRouter  = require('./routes/admin');
+const dialogRouter = require('./routes/dialog');
 
 app.locals.site = {
 		title: 			 '高校问卷调查管理系统',
@@ -39,23 +40,12 @@ app.use('/logout', logoutRouter);
 app.use('/register', regRouter);
 app.use('/user', userRouter);
 app.use('/admin', adminRouter);
+app.use('/dialog', dialogRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('error', { errorCode: 500 });
 });
-
-app.get('/about', (req, res) => {
-	res.render('about', { loggedin: req.session.loggedin });
-});
-
-app.get('/friends', (req, res) => {
-	res.render('friends', { loggedin: req.session.loggedin });
-})
-
-app.get('/200', (req, res) => {
-	res.status(200).render('error', { errorCode: 200 } );
-})
 
 const port = 3000;
 

@@ -3,7 +3,11 @@
 <div class="card">
 	<div class="login_box">
 		<h2 style="text-align: cenetr">请登录</h2><br>
-		<form action="/login/auth" method="post">
+		<% if (typeof surveyName !== undefined) { %>
+			<form action="/login/auth?title=<%= surveyName %>" method="post">
+		<% } else { %>
+			<form action="/login/auth" method="post">
+		<% } %>
 		用户名:<br>
 		<input type="text" name="username" placeholder="Username" required><br><br>
 		密码:<br>

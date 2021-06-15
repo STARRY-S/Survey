@@ -4,12 +4,10 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <!-- <meta name="theme-color" content="#33363b"> -->
-    <!-- <meta name="msapplication-TileColor" content="#33363b"> -->
     <link rel="stylesheet" href="/css/normalize.css">
 
     <% if (typeof pageTitle !== 'undefined') {%>
-    <title><%= pageTitle + ' | ' +site.title %></title>
+    <title><%= pageTitle + ' | ' + site.title %></title>
     <% } else { %>
     <title><%= site.title %></title>
     <% } %>
@@ -32,7 +30,7 @@
     <a href="/login" style="float:right">登录</a>
   <% } else  { %>
     <!-- TODO: redirect to self information page. -->
-    <a href="/logout" style="float:right">您好：<%= user.name %></a>
+    <a href="/logout" style="float:right">退出登录</a>
   <% } %>
 </div>
 
