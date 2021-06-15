@@ -16,6 +16,7 @@ const questionPage = (req, res, title) => {
 
     fs.readFile(filename, (err, data) => {
       const obj_list = JSON.parse(data);
+      console.log(obj_list);
       res.locals.obj_list = obj_list;
       res.render('index');
     });
@@ -64,6 +65,11 @@ router.get('/friends', (req, res) => {
 
 router.get('/error', (req, res) => {
 	res.status(200).render('error', { errorCode: 200 } );
+});
+
+router.post('/submit', (req, res) => {
+  console.log(req.body);
+  res.json(req.body);
 });
 
 module.exports = router;
