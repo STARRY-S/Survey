@@ -22,9 +22,9 @@ router.post('/confirm', (req, res) => {
       const title = dialog.data;
       req.session.dialog = {};
 
-      const sql = `delete from question where title="${title}"`;
+      const sql = `delete from question where title = ?`;
       const filename = 'data/' + hashCode(title) + '.json';
-      mysql.query(sql, (error, results, fields) => {
+      mysql.query(sql, [title], (error, results, fields) => {
         if (error) {
           throw error;
         }

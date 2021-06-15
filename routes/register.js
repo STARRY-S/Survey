@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
-const router = express.Router();
-const mysql   = require('../database');
+const router  = express.Router();
+const pool    = require('../database');
 
 // register page
 router.get('/', (req, res) => {
@@ -31,18 +31,26 @@ router.post('/add', (req, res) => {
 router.post('/add/student', (req, res) => {
   let user = req.session.user;
   user.student_id = req.body.student_id;
-  user.email = req.body.email || NULL;
-  user.sex = req.body.sex || NULL;
-  user.age = req.body.age || NULL;
-  user.school = req.body.school || NULL;
-  user.profession = req.body.profession || NULL;
-  user.class = req.body.class || NULL;
+  user.email = req.body.email || null;
+  user.sex = req.body.sex || null;
+  user.age = req.body.age || null;
+  user.school = req.body.school || null;
+  user.profession = req.body.profession || null;
+  user.class = req.body.class || null;
 
-  mysql.query(`INSERT INTO student (student_id, name, password, phone, email,` +
-    `sex, age, profession, class) VALUES ("${user.student_id}", "${user.name}"`+
-    `, "${user.pwd}", "${user.phone}", "${user.email}", "${user.sex}"` +
-    `, ${user.age}, "${user.profession}", ` +
-    `"${user.class}")`,
+  pool.query(`INSERT INTO student (student_id, name, password, phone, email,` +
+    `sex, age, profession, class) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      user.student_id,
+      user.name,
+      user.pwd,
+      user.phone,
+      user.email,
+      user.sex,
+      user.age,
+      user.profession,
+      user.class,
+    ],
     (error, results, fields) => {
       if (error) console.error(error);
     });
@@ -59,10 +67,17 @@ router.post('/add/teacher', (req, res) => {
   user.age = req.body.age || null;
   user.school = req.body.school || null;
 
-  mysql.query(`INSERT INTO teacher (teacher_id, name, password, phone, email,` +
-    `sex, age) VALUES ("${user.teacher_id}", "${user.name}"`+
-    `, "${user.pwd}", "${user.phone}", "${user.email}", "${user.sex}"` +
-    `, ${user.age})`,
+  pool.query(`INSERT INTO teacher (teacher_id, name, password, phone, email,` +
+    `sex, age) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      user.teacher_id,
+      user.name,
+      user.pwd,
+      user.phone,
+      user.email,
+      user.sex,
+      user.age,
+    ],
     (error, results, fields) => {
       if (error) console.error(error);
     });

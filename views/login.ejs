@@ -3,7 +3,7 @@
 <div class="card">
 	<div class="login_box">
 		<h2 style="text-align: cenetr">请登录</h2><br>
-		<% if (typeof surveyName !== undefined) { %>
+		<% if (typeof surveyName !== 'undefined') { %>
 			<form action="/login/auth?title=<%= surveyName %>" method="post">
 		<% } else { %>
 			<form action="/login/auth" method="post">

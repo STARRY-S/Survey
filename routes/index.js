@@ -1,16 +1,17 @@
 const express = require('express');
 const session = require('express-session');
-const mysql   = require('../database');
+const pool    = require('../database');
 const fs      = require('fs');
-const router = express.Router();
+const router  = express.Router();
 
 const questionPage = (req, res, title) => {
   if (typeof title === 'undefined' || title == null) {
     title = "*";
   }
 
-  let sql = `select filename from question where title="${title}"`;
-  mysql.query(sql, (error, results, fields) => {
+  let sql = `select filename from question where title = `
+      + pool.escape(title);
+  pool.query(sql, (error, results, fields) => {
     if (error) console.error(error);
     let filename = results[0].filename;
 
@@ -38,7 +39,7 @@ router.get('/', (req, res) => {
   }
 
   let sql = `select title from question`;
-  mysql.query(sql, (error, results, fields) => {
+  pool.query(sql, (error, results, fields) => {
     if (error) console.error(error);
 
     let question_list = [];

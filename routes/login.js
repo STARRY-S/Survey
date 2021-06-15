@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-const mysql   = require('../database');
+const pool    = require('../database');
 const router  = express.Router();
 
 router.get('/', (req, res) => {
@@ -24,9 +24,9 @@ router.post('/auth', (req, res) => {
 
 	// TODO: login via name or email or phone
   if (name && pwd) {
-		let sql = `select id from ${type} where ` +
-			`(name="${name}" AND password="${pwd}")`;
-		mysql.query(sql, (error, results, fields) =>
+		let sql = `select id from ${type} where (name = ? AND password = ?)`;
+
+		pool.query(sql, [name, pwd], (error, results, fields) =>
 		{
 			if (error) console.error(error);
 			if (results && results.length > 0) {
@@ -36,7 +36,6 @@ router.post('/auth', (req, res) => {
 					name: name,
 					type: type,
 				};
-				// res.locals.user = req.session.user;
 				res.redirect(title ? `/?title=${title}` : '/');
 			} else {
 				res.render('login', {
@@ -44,14 +43,12 @@ router.post('/auth', (req, res) => {
 					errorMessage: "请检查帐号及密码以及用户类型是否正确",
 				});
 			}
-			// res.end();
 		});
 	} else {
 		res.render('login', {
 			pageTitle: "登录失败",
 			errorMessage: "请检查帐号及密码以及用户类型是否正确",
 		});
-		// res.end();
 	}
 });
 
