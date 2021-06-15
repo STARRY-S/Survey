@@ -11,7 +11,16 @@
       </div>
     <% } %>
 
+  <% } else { %>
+    <div class="card">
+
+      <h1>Oops!管理员还没有添加任何调查问卷</h1>
+      <hr>
+      <p>敬请期待~</p>
+
+    </div>
   <% } %>
+
 <% } else if (typeof obj_list !== 'undefined') { %>
 
 <div class="card">
@@ -25,14 +34,4 @@
 
 </div>
 
-<% } else { %>
-
-<div class="card">
-
-  <h1>Oops!管理员还没有添加任何调查问卷</h1>
-  <hr>
-  <p>敬请期待~</p>
-
-</div>
-
-<% } %>
+<% }

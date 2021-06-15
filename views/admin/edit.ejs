@@ -12,7 +12,14 @@
       </div>
     <% } %>
 
-  <% } %>
+  <% } else { %>
+
+    <div class="card">
+      <h1>您没有创建任何问卷！</h1>
+      <hr>
+      <p><a href="/admin/add">点击此处</a>创建问卷。</p>
+    </div>
+
 <% } else if (typeof obj_list !== 'undefined') { %>
 
   <div class="card">

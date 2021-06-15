@@ -34,7 +34,7 @@ router.get('/', (req, res) => {
   }
 
   if (typeof title !== 'undefined') {
-    questionPage(req, res, req.query.title);
+    questionPage(req, res, title);
     return;
   }
 
