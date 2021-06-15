@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const mysql   = require('../database');
 const fs 			= require('fs');
+const path    = require('path');
 const router  = express.Router();
 const hashCode= require('../hashcode');
 
@@ -16,7 +17,7 @@ const questionPage = (req, res, title) => {
     let filename = results[0].filename;
 
     fs.readFile(filename, (err, data) => {
-      const obj_list = JSON.parse(data);
+      const obj_list = JSON.parse(data || "[]");
       res.locals.obj_list = obj_list;
       res.render('admin/edit', {
         title: title,
@@ -168,21 +169,29 @@ router.post('/submit', (req, res) => {
     return;
   }
 
-	let obj_list = req.session.obj_list;
-	let survey_name = obj_list[0] || 'default';
-	let filename = 'data/' + hashCode(survey_name) + '.json';
+	const obj_list = req.session.obj_list;
+	const survey_name = obj_list[0] || 'default';
+	const filename = path.join('data', hashCode(survey_name) + '.json');
+	const sql = `INSERT INTO question (title, filename) VALUES (?, ?)`;
 
-	let sql = `INSERT INTO question (title, filename) VALUES ("${obj_list[0]}",` +
-			` "${filename}")`;
-	fs.writeFile(filename, JSON.stringify(obj_list), function (err) {
-	  if (err) console.error(err);
+  try {
+    if (!fs.existsSync('data')) {
+      fs.mkdirSync('data');
+    }
 
-		mysql.query(sql, (error, results, fields) => {
-			if (error) console.error(error);
-			req.session.obj_list = [];
-			res.redirect("/");
-		});
-	});
+    fs.writeFile(filename, JSON.stringify(obj_list), function (err) {
+  	  if (err) console.error(err);
+
+  		mysql.query(sql, [obj_list[0], filename], (error, results, fields) => {
+  			if (error) console.error(error);
+  			req.session.obj_list = [];
+  			res.redirect("/");
+  		});
+  	});
+  } catch (err) {
+    console.error(err);
+  }
+
 });
 
 router.post('/delete', (req, res) => {

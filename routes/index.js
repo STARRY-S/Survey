@@ -2,6 +2,7 @@ const express = require('express');
 const session = require('express-session');
 const pool    = require('../database');
 const fs      = require('fs');
+const path    = require('path');
 const router  = express.Router();
 
 const questionPage = (req, res, title) => {
@@ -16,8 +17,8 @@ const questionPage = (req, res, title) => {
     let filename = results[0].filename;
 
     fs.readFile(filename, (err, data) => {
-      const obj_list = JSON.parse(data);
-      console.log(obj_list);
+      const obj_list = JSON.parse(data || "[]");
+      // console.log(obj_list);
       res.locals.obj_list = obj_list;
       res.render('index');
     });
@@ -69,7 +70,7 @@ router.get('/error', (req, res) => {
 });
 
 router.post('/submit', (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   res.json(req.body);
 });
 
