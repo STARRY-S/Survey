@@ -12,10 +12,12 @@
     </div>
 
     <script type="text/javascript">
-    new QRCode(
-      document.getElementById("qrcode"), {
-        text: "http://mc.starry-s.me:25565",
-      });
+      const hostname = window.location.hostname || "127.0.0.1";
+      const port = window.location.port || '';
+      new QRCode(
+        document.getElementById("qrcode"), {
+          text: port == '' ? `${hostname}` : `${hostname}:${port}`,
+        });
     </script>
 
 </div>
