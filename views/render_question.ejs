@@ -9,8 +9,8 @@
   <% if (obj.type === 'select') { %>
     <%= obj.title %>： <span style="color: red;">*</span><br>
     <select name="question_<%= i %>">
-      <% for (let j = 1; j <= obj.q_list.length; ++j) { %>
-        <option value="select_<%= i %>_<%= j %>"><%= obj.q_list[j-1] %></option>
+      <% for (let j = 0; j < obj.q_list.length; ++j) { %>
+        <option value="<%= obj.q_list[j] %>"><%= obj.q_list[j] %></option>
       <% } %>
     </select><br><br/>
   <% } %>
