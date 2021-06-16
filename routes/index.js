@@ -5,22 +5,24 @@ const fs      = require('fs');
 const path    = require('path');
 const router  = express.Router();
 
-const questionPage = (req, res, title) => {
-  if (typeof title === 'undefined' || title == null) {
-    title = "*";
-  }
-
-  let sql = `select filename from question where title = `
-      + pool.escape(title);
-  pool.query(sql, (error, results, fields) => {
-    if (error) console.error(error);
-    let filename = results[0].filename;
-
+const openQuestionFile = (filename) => {
+  return new Promise((resolve, reject) => {
     fs.readFile(filename, (err, data) => {
+      if (err) reject(err);
+
       const obj_list = JSON.parse(data || "[]");
-      // console.log(obj_list);
-      res.locals.obj_list = obj_list;
-      res.render('index');
+      resolve(obj_list);
+    });
+  });
+};
+
+const getQuestionFileName = (title) => {
+  let sql = `select filename from question where title = ` + pool.escape(title);
+  return new Promise((resolve, reject) => {
+    pool.query(sql, (error, results, fields) => {
+      if (error) reject(error);
+      let filename = results[0].filename;
+      resolve(filename);
     });
   });
 };
@@ -35,7 +37,13 @@ router.get('/', (req, res) => {
   }
 
   if (typeof title !== 'undefined') {
-    questionPage(req, res, title);
+     getQuestionFileName(title)
+      .then(filename => openQuestionFile(filename))
+      .then(obj_list => {
+        res.locals.obj_list = obj_list;
+        req.session.obj_list = obj_list;
+        res.render('index');
+      }).catch(err => console.error(err));
     return;
   }
 
@@ -67,11 +75,6 @@ router.get('/friends', (req, res) => {
 
 router.get('/error', (req, res) => {
 	res.status(200).render('error', { errorCode: 200 } );
-});
-
-router.post('/submit', (req, res) => {
-  // console.log(req.body);
-  res.json(req.body);
 });
 
 module.exports = router;
