@@ -22,9 +22,9 @@
 <div class="card">
 
   <% if (typeof obj_list === 'undefined' || obj_list.length < 1) { %>
-    <h1>新建调查问卷</h1>
+    <h1>新建调查问卷</h1><hr>
   <% } else { %>
-    <h1>添加题目</h1>
+    <h1>添加题目</h1><hr>
   <% } %>
 
   <form action="/admin/add_1" method="post">
@@ -52,7 +52,16 @@
 
     <div id="select_num"></div>
 
+    <p>用户类型：</p>
+    <select id="user_type" name="user_type">
+        <option value="all">全部用户</option>
+        <option value="student">学生</option>
+        <option value="teacher">教师</option>
+    </select><br>
+    <br>
+    <hr>
     <input type="submit" value="添加题目">
+
   </form>
 
   <form action="/admin/add_clear" method="post">

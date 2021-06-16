@@ -37,14 +37,36 @@ router.post('/confirm', (req, res) => {
       res.redirect("/");
       break;
     }
+    case 'add_clear': {
+      if (typeof user === 'undefined' || user.type !== 'admin') {
+        res.status(403).render('error', { errorCode: 403 });
+        break;
+      }
+
+      req.session.obj_list = [];
+      res.redirect('/admin/add');
+      break;
+    }
     default:
       throw new Error('INVALID DIALOG');
   }
 });
 
 router.post('/cancel', (req, res) => {
+  const dialog = req.session.dialog;
   req.session.dialog = {};
-  res.redirect('/');
+  if (dialog == undefined) {
+    res.redirect('/');
+    return;
+  }
+
+  switch (dialog.action) {
+    case 'add_clear':
+      res.redirect('/admin/add');
+      break;
+    default:
+      res.redirect('/')
+  }
 });
 
 module.exports = router;

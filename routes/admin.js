@@ -47,6 +47,7 @@ router.get('/add', (req, res) => {
 
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
+    obj_list: req.session.obj_list,
 	});
 });
 
@@ -87,10 +88,18 @@ router.post('/add_clear', (req, res) => {
     return;
   }
 
-  req.session.obj_list = [];
-  res.render('admin/create_survey', {
-		pageTitle: "新建问卷",
-	});
+  // store dialog information into user session.
+  const obj = {
+    dialog_title: "是否要清空列表？",
+    message: `列表中的所有题目都将被删除，此操作无法恢复！`,
+    action: 'add_clear',
+  };
+
+  req.session.dialog = obj;
+	res.render('dialog', {
+    dialog_obj: obj,
+  });
+
 });
 
 router.post('/add_1', (req, res) => {
@@ -113,6 +122,9 @@ router.post('/add_1', (req, res) => {
     title: req.body.c_title,
     type: req.body.c_type,
   };
+
+  const user_type = req.body.user_type;
+  // console.log(user_type);
 
   if (obj.type !== "input") {
     obj.q_num = req.body.q_num;
