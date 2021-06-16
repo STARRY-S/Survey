@@ -28,7 +28,7 @@
   <% } %>
 
   <form action="/admin/add_1" method="post">
-    <% if (typeof obj_list === 'undefined') { %>
+    <% if (typeof obj_list === 'undefined' || obj_list.length < 1) { %>
       <p>问卷标题：</p>
       <input type="text" id="s_title" name="s_title" required><br>
       <hr>
@@ -54,10 +54,29 @@
 
     <p>用户类型：</p>
     <select id="user_type" name="user_type">
-        <option value="all">全部用户</option>
-        <option value="student">学生</option>
-        <option value="teacher">教师</option>
+    <% if (typeof user_type !== 'undefined') { %>
+        <% if (user_type === 'all')  { %>
+          <option value="all" selected="selected">全部用户</option>
+        <% } else { %>
+          <option value="all">全部用户</option>
+        <% } %>
+        <% if (user_type === 'student')  { %>
+          <option value="student" selected="selected">学生</option>
+        <% } else { %>
+          <option value="student">学生</option>
+        <% } %>
+        <% if (user_type === 'teacher')  { %>
+          <option value="teacher" selected="selected">教师</option>
+        <% } else { %>
+          <option value="teacher">教师</option>
+        <% } %>
     </select><br>
+    <% } else { %>
+      <option value="all">全部用户</option>
+      <option value="student">学生</option>
+      <option value="teacher">教师</option>
+    <% } %>
+
     <br>
     <hr>
     <input type="submit" value="添加题目">

@@ -47,7 +47,15 @@ router.get('/', (req, res) => {
     return;
   }
 
-  let sql = `select title from question`;
+  let type_code = 0;
+  switch (req.session.user.type) {
+    case 'student': type_code = 1; break;
+    case 'teacher': type_code = 2; break;
+    default: type_code = 0;
+  }
+
+  let sql = `select title from question where ` +
+      `(user_type = ${type_code} or user_type = 0)`;
   pool.query(sql, (error, results, fields) => {
     if (error) console.error(error);
 

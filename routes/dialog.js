@@ -38,12 +38,14 @@ router.post('/confirm', (req, res) => {
       break;
     }
     case 'add_clear': {
+      req.session.dialog = {};
       if (typeof user === 'undefined' || user.type !== 'admin') {
         res.status(403).render('error', { errorCode: 403 });
         break;
       }
 
       req.session.obj_list = [];
+      req.session.add_user_type;
       res.redirect('/admin/add');
       break;
     }

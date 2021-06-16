@@ -48,6 +48,7 @@ router.get('/add', (req, res) => {
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
     obj_list: req.session.obj_list,
+    user_type: req.session.add_user_type,
 	});
 });
 
@@ -88,7 +89,6 @@ router.post('/add_clear', (req, res) => {
     return;
   }
 
-  // store dialog information into user session.
   const obj = {
     dialog_title: "是否要清空列表？",
     message: `列表中的所有题目都将被删除，此操作无法恢复！`,
@@ -99,7 +99,6 @@ router.post('/add_clear', (req, res) => {
 	res.render('dialog', {
     dialog_obj: obj,
   });
-
 });
 
 router.post('/add_1', (req, res) => {
@@ -123,8 +122,8 @@ router.post('/add_1', (req, res) => {
     type: req.body.c_type,
   };
 
-  const user_type = req.body.user_type;
-  // console.log(user_type);
+  const add_user_type = req.body.user_type;
+  req.session.add_user_type = add_user_type;
 
   if (obj.type !== "input") {
     obj.q_num = req.body.q_num;
@@ -139,6 +138,7 @@ router.post('/add_1', (req, res) => {
     res.render('admin/create_survey', {
 			pageTitle: "新建问卷",
 			obj_list: req.session.obj_list,
+      user_type: req.session.add_user_type,
 		});
   }
 });
@@ -170,6 +170,7 @@ router.post('/add_2', (req, res) => {
   res.render('admin/create_survey', {
 		pageTitle: "新建问卷",
 		obj_list: req.session.obj_list,
+    user_type: req.session.add_user_type,
 	});
 });
 
@@ -182,9 +183,17 @@ router.post('/submit', (req, res) => {
   }
 
 	const obj_list = req.session.obj_list;
+  let type_code = req.session.add_user_type || 0;
 	const survey_name = obj_list[0] || 'default';
 	const filename = path.join('data', hashCode(survey_name) + '.json');
-	const sql = `INSERT INTO question (title, filename) VALUES (?, ?)`;
+	const sql = `INSERT INTO question (title, filename, user_type)` +
+      ` VALUES (?, ?, ?)`;
+
+  switch (type_code) {
+    case 'teacher': type_code = 2; break;
+    case 'student': type_code = 1; break;
+    default: type_code = 0; break;
+  }
 
   try {
     if (!fs.existsSync('data')) {
@@ -194,9 +203,11 @@ router.post('/submit', (req, res) => {
     fs.writeFile(filename, JSON.stringify(obj_list), function (err) {
   	  if (err) console.error(err);
 
-  		mysql.query(sql, [obj_list[0], filename], (error, results, fields) => {
+  		mysql.query(sql, [obj_list[0], filename, type_code],
+        (error, results, fields) => {
   			if (error) console.error(error);
   			req.session.obj_list = [];
+        req.session.add_user_type = 0;
   			res.redirect("/");
   		});
   	});
