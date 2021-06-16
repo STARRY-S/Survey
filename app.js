@@ -8,6 +8,7 @@ const logoutRouter = require('./routes/logout');
 const indexRouter  = require('./routes/index');
 const regRouter    = require('./routes/register');
 const adminRouter  = require('./routes/admin');
+const submitRouter = require('./routes/submit');
 const dialogRouter = require('./routes/dialog');
 
 app.locals.site = {
@@ -37,11 +38,18 @@ app.use('/login', loginRouter);
 app.use('/logout', logoutRouter);
 app.use('/register', regRouter);
 app.use('/admin', adminRouter);
+app.use('/submit', submitRouter);
 app.use('/dialog', dialogRouter);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).render('error', { errorCode: 500 });
+});
+
+// Render 404 Page
+app.use((req, res, next) => {
+	res.locals.errorCode = 404;
+	res.status(404).render('error');
 });
 
 const port = 3000;

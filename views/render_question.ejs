@@ -20,7 +20,7 @@
     <fieldset>
       <% for (let j = 1; j <= obj.q_list.length; ++j) { %>
         <label class="container"><%= obj.q_list[j-1] %>
-          <input type="checkbox" name=<%= `cb_${i}_${j}` %>>
+          <input type="checkbox" name="<%= `cb_${i}_${j}` %>" >
           <span class="checkmark"></span>
         </label>
       <% } %>
