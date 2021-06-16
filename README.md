@@ -2,17 +2,17 @@
 
 > Still working in progress.
 
-# Current status
+## Current status
 
 - [x] Create survey by administrator.
 - [x] Render question list page for user.
 - [x] Register, Login/out.
-- [x] Store user information in MySQL.
+- [x] Store user information in MySQL database.
 - [ ] About page, Right bar, Friends page.
 - [ ] Submit the data filled in by user.
-- [ ] Multi Language Support.(Currently Simplified Chinese)
+- [ ] Multi Language Support. (Currently Simplified Chinese)
 
-# Usage
+## Usage
 
 1. Install MySQL and setup user name and password.
 
@@ -81,7 +81,7 @@ $ npm start     # visit http://127.0.0.1:3000
 
 You can edit default port number in `app.js`.
 
-# Others
+## Others
 
 This project is just for learning purposes, and may be unsafe and unstable.
 
