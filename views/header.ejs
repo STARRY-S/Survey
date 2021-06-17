@@ -35,5 +35,23 @@
   <% } %>
 </div>
 
+<% if (typeof toast !== 'undefined') { %>
+
+<div id="toastbar"><%= toast %></div>
+
+<script>
+function showToast() {
+  var x = document.getElementById("toastbar");
+  x.className = "show";
+  setTimeout(function() {
+    x.className = x.className.replace("show", "");
+  }, 3000);
+}
+
+showToast();
+</script>
+
+<% } %>
+
 <div class="row">
 <div class="leftcolumn">
