@@ -31,10 +31,12 @@ router.post('/auth', (req, res) => {
 			if (error) console.error(error);
 			if (results && results.length > 0) {
 				req.session.loggedin = true;
+				const id = results[0].id;
 				// create a user object which stores username and usertype.
 				req.session.user = {
 					name: name,
 					type: type,
+					id: id,
 				};
 				res.redirect(title ? `/?title=${title}` : '/');
 			} else {

@@ -6,49 +6,6 @@ const router  = express.Router();
 const pool    = require('../utils').pool;
 const utils   = require('../utils').utils;
 
-const saveQuestionData = async (obj_list, cb) => {
-  const survey_name = obj_list[0].title || 'default';
-  const filename = path.join('data', utils.hashCode(survey_name) + '.json');
-	let sql = `INSERT INTO question (title, filename, user_type)` +
-      ` VALUES (?, ?, ?)`;
-  let list = [obj_list[0].title, filename, obj_list[0].type];
-
-  try {
-    console.log("query sql1");
-    await utils.sqlQuery(sql, list);
-    sql = 'select id from question where title=?';
-    list = [obj_list[0].title];
-    console.log("query sql2");
-    const results = await utils.sqlQuery(sql, list);
-    obj_list[0].id = results[0].id;
-    console.log("write data");
-    await utils.writeFile(filename, JSON.stringify(obj_list));
-  } catch (err) {
-    console.error("Error when saving question: \n" + err);
-  }
-  cb();
-};
-
-const questionPage = (req, res, title) => {
-  if (typeof title === 'undefined' || title == null) {
-    title = "*";
-  }
-
-  let sql = `select filename from question where title="${title}"`;
-  pool.query(sql, (error, results, fields) => {
-    if (error) console.error(error);
-    let filename = results[0].filename;
-
-    fs.readFile(filename, (err, data) => {
-      const obj_list = JSON.parse(data || "[]");
-      res.locals.obj_list = obj_list;
-      res.render('admin/edit', {
-        title: title,
-      });
-    });
-  });
-};
-
 router.get('/', (req, res) => {
 	res.send("admin");
 });
@@ -75,7 +32,7 @@ router.get('/add', (req, res) => {
 	});
 });
 
-router.get('/edit', (req, res) => {
+router.get('/edit', async (req, res) => {
 	const user = req.session.user;
 
 	if (!validAdmin(user)) {
@@ -83,24 +40,41 @@ router.get('/edit', (req, res) => {
 		return;
 	}
 
+  // render question page if query.edit_title is not undefined
 	if (typeof req.query.edit_title !== 'undefined') {
-    questionPage(req, res, req.query.edit_title);
+    const title = req.query.edit_title;
+    let obj_list = [];
+    let sql = `select filename from question where title = ? `;
+    try {
+      const results  = await utils.sqlQuery(sql, [ title ]);
+      const filename = results[0].filename;
+      const data     = await utils.readFile(filename);
+      obj_list = JSON.parse(data || '[]');
+    } catch (err) {
+      console.error("Error when render question page: \n" + err);
+      res.status(500).render('error', {errorCode: 500});
+      return;
+    }
+    res.locals.obj_list = obj_list;
+    res.render('admin/edit', { title: title });
     return;
   }
 
 	let sql = `select title from question`;
-  pool.query(sql, (error, results, fields) => {
-    if (error) console.error(error);
-
+  try {
+    const results = await utils.sqlQuery(sql);
     let question_list = [];
     for (let i = 0; i < results.length; ++i) {
       question_list.push(results[i].title);
     }
     res.render("admin/edit", {
-			title: "查看已发布的问卷",
+			pageTitle: "查看已发布的问卷",
 			question_list: question_list
 		});
-  });
+  } catch (err) {
+    console.error("Error in admin/edit: \n", err);
+    res.status(500).render('error', {errorCode: 500});
+  }
 });
 
 router.post('/add_clear', (req, res) => {
@@ -140,8 +114,7 @@ router.post('/add_1', (req, res) => {
 			|| req.session.obj_list.length < 1) {
     req.session.obj_list = [];
 		req.session.obj_list.push(first_obj);
-  }      // console.log(obj_list);
-
+  }
 
   let obj = {
     title: req.body.c_title,
@@ -186,7 +159,6 @@ router.post('/add_2', (req, res) => {
 	}
 
   let obj = list[list.length - 1];
-
   for (let i = 1; i <= obj.q_num; i++) {
     obj.q_list.push(req.body[`select_${i}`]);
   }
@@ -200,7 +172,7 @@ router.post('/add_2', (req, res) => {
 	});
 });
 
-router.post('/submit', (req, res) => {
+router.post('/submit', async (req, res) => {
 	const user = req.session.user;
 
   if (!validAdmin(user)) {
@@ -223,12 +195,26 @@ router.post('/submit', (req, res) => {
     fs.mkdirSync('data');
   }
 
-  saveQuestionData(obj_list, () => {
-    req.session.obj_list.length = 0;
-    req.session.add_user_type = 0;
-    res.redirect("/");
-  });
+  const survey_name = obj_list[0].title || 'default';
+  const filename = path.join('data', utils.hashCode(survey_name) + '.json');
+	let sql = `INSERT INTO question (title, filename, user_type)` +
+      ` VALUES (?, ?, ?)`;
+  let list = [obj_list[0].title, filename, obj_list[0].type];
 
+  try {
+    await utils.sqlQuery(sql, list);
+    sql = 'select id from question where title=?';
+    list = [obj_list[0].title];
+    const results = await utils.sqlQuery(sql, list);
+    obj_list[0].id = results[0].id;
+    await utils.writeFile(filename, JSON.stringify(obj_list));
+  } catch (err) {
+    console.error("Error when saving question: \n" + err);
+  }
+
+  req.session.obj_list = [];
+  req.session.add_user_type = 0;
+  res.redirect("/");
 });
 
 router.post('/delete', (req, res) => {

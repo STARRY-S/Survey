@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const pool    = require('../utils').pool;
-const hashCode= require('../utils').utils.hashCode;
+const utils   = require('../utils').utils;
 const fs      = require('fs');
 const path    = require('path');
 const router  = express.Router();
@@ -20,43 +20,7 @@ const getUserTableName = (type) => {
   }
 };
 
-const getFileSubmittedFilename = (sql, qid) => {
-  return new Promise((resolve, reject) => {
-    pool.query(sql, [qid], (error, results, fields) => {
-      if (error) reject(error);
-      if (results.length == 0) {
-        resolve(null);
-        return;
-      }
-      resolve(results[0].filename);
-    });
-  });
-};
-
-const storeJsonFile = (user, obj_list) => {
-  const filename = path.join('data', 'user',
-      hashCode(user.name) + '.json');
-  return new Promise((resolve, reject) => {
-    fs.writeFile(filename, JSON.stringify(obj_list), (err) => {
-      if (err) reject(err);
-      resolve(filename);
-    });
-  });
-};
-
-const storeData = (user, qid, filename) => {
-  let sql = `insert into ${getUserTableName(user.type)} (user_id, `
-    + `question_id, filename) values ( ?, ?, ? )`;
-
-  return new Promise((resolve, reject) => {
-    pool.query(sql, [user.id, qid, filename], (err, res, fid) => {
-      if (error) reject(error);
-      resolve(res);
-    });
-  });
-};
-
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const loggedin = req.session.loggedin;
   const user     = req.session.user;
   if (!loggedin) {
@@ -64,21 +28,15 @@ router.post('/', (req, res) => {
     return;
   }
 
-  let sql = 'select filename from ' + getUserTableName(user.type);
-  sql += ' where question_id = ?';
-
   // console.log(req.session.obj_list);
   let obj_list = req.session.obj_list;
   for (let i = 1; i < obj_list.length; ++i) {
-    // console.log(obj_list[i]);
     switch (obj_list[i].type) {
       case 'input':
         obj_list[i].answer = req.body[`question_${i}`];
-        // console.log(req.body[`question_${i}`]);
         break;
       case 'select':
         obj_list[i].answer = req.body[`question_${i}`];
-        // console.log(req.body[`question_${i}`]);
         break;
       case 'multiselect':
         obj_list[i].answer = "";
@@ -92,13 +50,32 @@ router.post('/', (req, res) => {
         break;
     }
   }
-  getFileSubmittedFilename(sql, obj_list[0].id)
-    .then((filename) => {
-      console.log(filename);
-    })
-    .catch(err => console.error(err));
-  console.log(obj_list);
-  res.redirect('/');
+
+  let sql = 'select filename from ' + getUserTableName(user.type);
+  sql += ' where question_id = ?';
+  try {
+    let results = await utils.sqlQuery(sql, [obj_list[0].id]);
+    if (results.length == 0) {
+      let sql = `insert into ${getUserTableName(user.type)} (user_id, `
+        + `question_id, filename) values ( ?, ?, ? )`;
+      const filename = path.join('data', 'user',
+          utils.hashCode(user.name + obj_list[0].title) + '.json');
+      let results = await utils.sqlQuery(sql,
+        [user.id, obj_list[0].id, filename]);
+      await utils.writeFile(filename, JSON.stringify(obj_list));
+      req.session.toast = "提交成功！";
+      res.redirect('/');
+    } else {
+      const filename = results[0].filename;
+      await utils.writeFile(filename, JSON.stringify(obj_list));
+      req.session.toast = "提交成功！";
+      res.redirect('/');
+    }
+  } catch (err) {
+    console.error("Error when submit: \n", err);
+    res.status(500).render('error', { errorCode: 500 });
+    return;
+  }
 });
 
 module.exports = router;
