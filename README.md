@@ -8,6 +8,7 @@
 - [x] Render question list page for user.
 - [x] Register, Login/out.
 - [x] Store user information in MySQL database.
+- [x] Use async/await keyword to avoid the callback hell problem.
 - [ ] About page, Right bar, Friends page.
 - [ ] Submit the data filled in by user.
 - [ ] Multi Language Support. (Currently Simplified Chinese)
@@ -63,21 +64,45 @@ create table teacher (
 
 create table question (
     id INT AUTO_INCREMENT NOT NULL,
+    user_type INT NOT NULL DEFAULT 0,
     title VARCHAR(50) NOT NULL,
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     filename VARCHAR(128) NOT NULL,
     PRIMARY KEY(id)
 );
-```
 
-Edit `database.js` according to the username and password you set.
+create table studentdata (
+    id INT AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,
+    question_id INT NOT NULL,
+    updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    filename VARCHAR(128) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES student(id),
+    FOREIGN KEY (question_id) REFERENCES question(id)
+);
 
+create table teacherdata (
+    id INT AUTO_INCREMENT NOT NULL,
+    user_id INT NOT NULL,
+    question_id INT NOT NULL,
+    updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+    filename VARCHAR(128) NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY (user_id) REFERENCES teacher(id),
+    FOREIGN KEY (question_id) REFERENCES question(id)
+);
 ```
+Then clone this repository and install dependencies by `npm install`.
+
+``` shell
 $ git clone https://github.com/STARRY-S/Survey.git
 $ cd Survey
 $ npm install
 $ npm start     # visit http://127.0.0.1:3000
 ```
+
+Edit `utils.js` according to the username and password you set.
 
 You can edit default port number in `app.js`.
 
