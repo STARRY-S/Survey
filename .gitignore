@@ -1,3 +1,4 @@
-/node_modules
-/docs
-/data/*
+node_modules/
+docs/
+data/
+sessions/
