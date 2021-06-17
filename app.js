@@ -3,6 +3,7 @@ const app = express();
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const FileStore = require('session-file-store')(session);
+const https = require('https');
 
 const loginRouter  = require('./routes/login');
 const logoutRouter = require('./routes/logout');
@@ -27,7 +28,7 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 app.use(session({
 	store: new FileStore(filestoreOpetions),	// stores session into file
-	secret: 'secret',							// session secret code 
+	secret: 'secret',							// session secret code
 	resave: true,									// force session to be saved
 	saveUninitialized: false,			// do not save uninitialized connection
 	rolling: true,								// Force the session identifier cookie to be set
@@ -71,5 +72,13 @@ const port = 3000;
 
 // Function to listen on the port
 app.listen(port, () => console.log(`This app is listening on port ${port}`));
+
+// https.createServer({
+// 	key: null,
+// 	cert: null,
+// }, app)
+// .listen(port, () => {
+// 	console.log(`This app is listening on port ${port}`);
+// });
 
 module.exports = app;

@@ -1,9 +1,9 @@
 const express = require('express');
 const session = require('express-session');
-const mysql   = require('../database');
+const pool   = require('../utils').pool;
 const fs 			= require('fs');
 const router  = express.Router();
-const hashCode= require('../hashcode');
+const utils= require('../utils').utils;
 
 router.post('/confirm', (req, res) => {
   const user = req.session.user;
@@ -23,8 +23,8 @@ router.post('/confirm', (req, res) => {
       req.session.dialog = {};
 
       const sql = `delete from question where title = ?`;
-      const filename = 'data/' + hashCode(title) + '.json';
-      mysql.query(sql, [title], (error, results, fields) => {
+      const filename = 'data/' + utils.hashCode(title) + '.json';
+      pool.query(sql, [title], (error, results, fields) => {
         if (error) {
           throw error;
         }

@@ -1,6 +1,6 @@
 const express = require('express');
 const session = require('express-session');
-const pool    = require('../database');
+const pool    = require('../utils').pool;
 const router  = express.Router();
 
 router.get('/', (req, res) => {

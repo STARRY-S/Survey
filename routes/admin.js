@@ -1,10 +1,33 @@
 const express = require('express');
 const session = require('express-session');
-const mysql   = require('../database');
 const fs 			= require('fs');
 const path    = require('path');
 const router  = express.Router();
-const hashCode= require('../hashcode');
+const pool    = require('../utils').pool;
+const utils   = require('../utils').utils;
+
+const saveQuestionData = async (obj_list, cb) => {
+  const survey_name = obj_list[0].title || 'default';
+  const filename = path.join('data', utils.hashCode(survey_name) + '.json');
+	let sql = `INSERT INTO question (title, filename, user_type)` +
+      ` VALUES (?, ?, ?)`;
+  let list = [obj_list[0].title, filename, obj_list[0].type];
+
+  try {
+    console.log("query sql1");
+    await utils.sqlQuery(sql, list);
+    sql = 'select id from question where title=?';
+    list = [obj_list[0].title];
+    console.log("query sql2");
+    const results = await utils.sqlQuery(sql, list);
+    obj_list[0].id = results[0].id;
+    console.log("write data");
+    await utils.writeFile(filename, JSON.stringify(obj_list));
+  } catch (err) {
+    console.error("Error when saving question: \n" + err);
+  }
+  cb();
+};
 
 const questionPage = (req, res, title) => {
   if (typeof title === 'undefined' || title == null) {
@@ -12,7 +35,7 @@ const questionPage = (req, res, title) => {
   }
 
   let sql = `select filename from question where title="${title}"`;
-  mysql.query(sql, (error, results, fields) => {
+  pool.query(sql, (error, results, fields) => {
     if (error) console.error(error);
     let filename = results[0].filename;
 
@@ -66,7 +89,7 @@ router.get('/edit', (req, res) => {
   }
 
 	let sql = `select title from question`;
-  mysql.query(sql, (error, results, fields) => {
+  pool.query(sql, (error, results, fields) => {
     if (error) console.error(error);
 
     let question_list = [];
@@ -78,7 +101,6 @@ router.get('/edit', (req, res) => {
 			question_list: question_list
 		});
   });
-
 });
 
 router.post('/add_clear', (req, res) => {
@@ -109,11 +131,15 @@ router.post('/add_1', (req, res) => {
     return;
   }
 
-	let s_title = req.body.s_title;
+	const s_title = req.body.s_title;
+  const first_obj = {
+    title: s_title,
+    id: null,
+  };
   if (typeof req.session.obj_list === 'undefined'
 			|| req.session.obj_list.length < 1) {
     req.session.obj_list = [];
-		req.session.obj_list.push(s_title);
+		req.session.obj_list.push(first_obj);
   }      // console.log(obj_list);
 
 
@@ -184,36 +210,24 @@ router.post('/submit', (req, res) => {
 
 	const obj_list = req.session.obj_list;
   let type_code = req.session.add_user_type || 0;
-	const survey_name = obj_list[0] || 'default';
-	const filename = path.join('data', hashCode(survey_name) + '.json');
-	const sql = `INSERT INTO question (title, filename, user_type)` +
-      ` VALUES (?, ?, ?)`;
+
 
   switch (type_code) {
     case 'teacher': type_code = 2; break;
     case 'student': type_code = 1; break;
     default: type_code = 0; break;
   }
+  obj_list[0].type = type_code;
 
-  try {
-    if (!fs.existsSync('data')) {
-      fs.mkdirSync('data');
-    }
-
-    fs.writeFile(filename, JSON.stringify(obj_list), function (err) {
-  	  if (err) console.error(err);
-
-  		mysql.query(sql, [obj_list[0], filename, type_code],
-        (error, results, fields) => {
-  			if (error) console.error(error);
-  			req.session.obj_list = [];
-        req.session.add_user_type = 0;
-  			res.redirect("/");
-  		});
-  	});
-  } catch (err) {
-    console.error(err);
+  if (!fs.existsSync('data')) {
+    fs.mkdirSync('data');
   }
+
+  saveQuestionData(obj_list, () => {
+    req.session.obj_list.length = 0;
+    req.session.add_user_type = 0;
+    res.redirect("/");
+  });
 
 });
 

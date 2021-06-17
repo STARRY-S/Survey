@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const router  = express.Router();
-const pool    = require('../database');
+const pool    = require('../utils').pool;
 
 // register page
 router.get('/', (req, res) => {
