@@ -1,11 +1,12 @@
-.card {
+div.card {
   font-size: 16px;
-  background-color: white;
+  background-color: #ffffff;
   padding: 25px;
   margin-top: 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-bottom: 20px;
 }
 
 .center {
@@ -25,12 +26,12 @@ hr {
 }
 
 a {
-  color: #14b9c3;
+  color: #1c8dc1;
   text-decoration: none;
 }
 
 a:hover {
-  color: #058080;
+  color: #136082;
 }
 
 form {
@@ -148,7 +149,7 @@ input[type=radio]
 
 input[type=submit] {
   width: 100%;
-  background-color: #0cacde;
+  background-color: #21A4DF;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;
@@ -165,19 +166,27 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: #0cacde;
+  background-color: #21A4DF;
 }
 
 button.important {
-  background-color: #d94a4a;
+  background-color: #ca2333;
+}
+
+button.important:hover {
+  background-color: #e7727d;
 }
 
 button:hover {
-  background-color: #75d2ff;
+  background-color: #7fcaec;
 }
 
 input[type=submit]:hover {
-  background-color: #75d2ff;
+  background-color: #7fcaec;
+}
+
+p.error {
+  color: #dc3545;
 }
 
 div.main_box {
@@ -190,8 +199,8 @@ div.login_box {
   margin-right: 30%;
   margin-top: 10%;
   margin-bottom: 10%;
-  /* border-radius: 15px; */
-  box-shadow: 1px 5px 6px #3c3c3c;
+  border: 2px solid #54881b;
+  box-shadow: 0px 0px 20px #d2d5d8;
 }
 
 div.center_box {
@@ -202,7 +211,7 @@ div.center_box {
   margin-bottom: 10%;
   border-radius: 0px;
   border: 0px solid black;
-  box-shadow: 1px 5px 6px #3c3c3c;
+  /* box-shadow: 1px 5px 6px #3c3c3c; */
 }
 
 div.question {

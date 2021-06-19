@@ -5,15 +5,14 @@
 body {
   font-family: Arial;
   padding: 0px;
-  background: #e2e2e2;
-
+  background: #d2d5d8;
 }
 
 .header {
   padding: 20px;
   padding-bottom: 5px;
   text-align: left;
-  background-color: #073850;
+  background-color: #13405e;
   /* background: url("/images/background.jpg");
   background-repeat: no-repeat;
   background-position: center; */
@@ -30,11 +29,12 @@ body {
 .topnav {
   padding: 5px;
   overflow: hidden;
-  background-color: #235375;
+  background-color: #0a2333;
 }
 
 /* Style the topnav links */
 .topnav a {
+  font-size: 18px;
   float: left;
   display: block;
   color: #f2f2f2;
@@ -45,8 +45,8 @@ body {
 
 /* Change color on hover */
 .topnav a:hover {
-  background-color: #5ae5f7;
-  color: black;
+  background-color: #257eb7;
+  color: white;
 }
 
 .leftcolumn {
@@ -54,7 +54,7 @@ body {
   width: 73%;
   padding: 10px;
   margin-left: 20px;
-  background-color: #dadada;
+  background-color: #bfc4c8;
   box-shadow: 0 0.5em 1em 0.5em rgba(0,0,0,0.19);
 }
 
@@ -74,7 +74,7 @@ body {
 .rightcolumn {
   float: left;
   width: 25%;
-  background-color: rgba(#f2f2f2, 0.25);
+  background-color: rgba(255, 255, 255, 0);
   padding-left: 15px;
   padding-right: 15px;
   /* box-shadow: 0 0.5em 1em 0.5em rgba(0,0,0,0.19); */
@@ -82,20 +82,21 @@ body {
 
 /* Fake image */
 .fakeimg {
-  background-color: #aaa;
+  background-color: #73ba25;
   width: 100%;
   padding: 20px;
   margin-top: 10px;
   margin-bottom: 10px;
+  border-radius: 5px;
 }
 
 /* Add a card effect for articles */
-.card {
+/* .card {
   background-color: white;
   padding: 20px;
   margin-top: 20px;
   margin-bottom: 20px;
-}
+} */
 
 /* Footer */
 .footer {
@@ -104,7 +105,7 @@ body {
   width: 100%;
   padding-top: 10px;
   padding-bottom: 10px;
-  background: #092d3e;
+  background: #173f4f;
   margin-bottom: 0px;
 }
 
