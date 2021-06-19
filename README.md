@@ -78,8 +78,12 @@ create table studentdata (
     updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     filename VARCHAR(128) NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY (user_id) REFERENCES student(id),
-    FOREIGN KEY (question_id) REFERENCES question(id)
+    FOREIGN KEY (user_id)
+      REFERENCES student(id)
+      ON DELETE CASCADE,
+    FOREIGN KEY (question_id)
+      REFERENCES question(id)
+      ON DELETE CASCADE
 );
 
 create table teacherdata (
@@ -89,15 +93,37 @@ create table teacherdata (
     updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     filename VARCHAR(128) NOT NULL,
     PRIMARY KEY(id),
-    FOREIGN KEY (user_id) REFERENCES teacher(id),
-    FOREIGN KEY (question_id) REFERENCES question(id)
+    FOREIGN KEY (user_id)
+      REFERENCES teacher(id)
+      ON DELETE CASCADE,
+    FOREIGN KEY (question_id)
+      REFERENCES question(id)
+      ON DELETE CASCADE
 );
 ```
+And the tables in your database should looks like this:
+
+``` text
+mysql> show tables;
++---------------------+
+| Tables_in_database  |
++---------------------+
+| admin               |
+| question            |
+| student             |
+| studentdata         |
+| teacher             |
+| teacherdata         |
++---------------------+
+6 rows in set (0.00 sec)
+```
+
 Then clone this repository and install dependencies by `npm install`.
 
 ``` shell
 $ git clone https://github.com/STARRY-S/Survey.git
 $ cd Survey
+$ mkdir ./data && mkdir ./data/user
 $ npm install
 $ npm start     # visit http://127.0.0.1:3000
 ```
