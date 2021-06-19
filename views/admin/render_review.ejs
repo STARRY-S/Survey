@@ -1,0 +1,32 @@
+<% for (let i = 1; i < obj_list.length; ++i ) { %>
+  <% let obj = obj_list[i] %>
+  <h3><%= obj.title %>：<br></h3>
+  <% if (obj.type === 'input') { %>
+    <fieldset>
+      <p>用户回答的内容如下：</p>
+      <% for (let m of obj.answer_list) { %>
+        <p><%= m %></p>
+      <% } %>
+    </fieldset><br>
+  <% } %>
+
+  <% if (obj.type === 'select') { %>
+    <fieldset>
+      <p>用户选择的选项数量如下：</p>
+      <% for (let m of obj.q_list) { %>
+        <p><%= m %>: <%= obj[m] %></p>
+      <% } %>
+    </fieldset>
+    <br>
+  <% } %>
+
+  <% if (obj.type === 'multiselect') { %>
+    <fieldset>
+      <p>用户选择的选项数量如下：</p>
+      <% for (let m of obj.q_list) { %>
+        <p><%= m %>: <%= obj[m] %></p>
+      <% } %>
+    </fieldset>
+    <br>
+  <% } %>
+<% } %>

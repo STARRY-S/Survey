@@ -39,10 +39,10 @@ router.post('/', async (req, res) => {
         obj_list[i].answer = req.body[`question_${i}`];
         break;
       case 'multiselect':
-        obj_list[i].answer = "";
+        obj_list[i].answer = [];
         for (let j = 1; j <= obj_list[i].q_num; ++j) {
           if (req.body[`cb_${i}_${j}`]) {
-            obj_list[i].answer += obj_list[i].q_list[j-1] + " ";
+            obj_list[i].answer.push(obj_list[i].q_list[j-1]);
           }
         }
         break;
@@ -52,21 +52,25 @@ router.post('/', async (req, res) => {
   }
 
   let sql = 'select filename from ' + getUserTableName(user.type);
-  sql += ' where question_id = ?';
+  sql += ' where (question_id = ? and user_id = ? )';
   try {
-    let results = await utils.sqlQuery(sql, [obj_list[0].id]);
+    let results = await utils.sqlQuery(sql, [obj_list[0].id, user.id]);
     if (results.length == 0) {
       let sql = `insert into ${getUserTableName(user.type)} (user_id, `
         + `question_id, filename) values ( ?, ?, ? )`;
       const filename = path.join('data', 'user',
           utils.hashCode(user.name + obj_list[0].title) + '.json');
+      // console.log("Submit data: ");
+      // console.log("user_id: %d\nquestion_id: %d\n", user.id, obj_list[0].id);
       let results = await utils.sqlQuery(sql,
         [user.id, obj_list[0].id, filename]);
+      obj_list[0].user = user.id;
       await utils.writeFile(filename, JSON.stringify(obj_list));
       req.session.toast = "提交成功！";
       res.redirect('/');
     } else {
       const filename = results[0].filename;
+      obj_list[0].user = user.id;
       await utils.writeFile(filename, JSON.stringify(obj_list));
       req.session.toast = "提交成功！";
       res.redirect('/');

@@ -77,6 +77,80 @@ router.get('/edit', async (req, res) => {
   }
 });
 
+router.get('/review', async (req, res) => {
+  const user = req.session.user;
+  const loggedin = req.session.loggedin;
+
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
+  }
+
+  const review_qid = req.query.qid;
+  if (review_qid) {
+    let review_type = req.session.review_type || 'student';
+    let sql = 'select filename from question where id = ?';
+    let result = await utils.sqlQuery(sql, [review_qid]);
+    let questionFile = result[0].filename;
+    let obj_list = JSON.parse(await utils.readFile(questionFile) || '[]');
+    // initialize answer list as a array
+    for (let i = 1; i < obj_list.length; ++i) {
+      if (obj_list[i].type !== 'input') {
+        for (let p of obj_list[i].q_list) {
+          obj_list[i][`${p}`] = 0;
+        }
+      } else {
+        obj_list[i].answer_list = obj_list[i].answer_list || [];
+      }
+    }
+
+    sql = 'select filename from ';
+    sql += (review_type === 'student') ? 'studentdata' : 'teacherdata';
+    sql += ' where question_id = ?';
+
+    // That's so horrible :-(
+    result = await utils.sqlQuery(sql, [review_qid]);
+    for (let i = 0; i < result.length; ++i) {
+      let data = JSON.parse(await utils.readFile(result[i].filename) || '[]');
+      for (let j = 1; j < data.length; ++j) {
+        if (data[j].type === 'multiselect') {
+          for (let p of data[j].answer) {
+            ++obj_list[j][`${p}`];
+          }
+        } else if (data[j].type === 'select') {
+          ++obj_list[j][data[j].answer];
+        } else {
+          obj_list[j].answer_list.push(data[j].answer);
+        }
+      }
+    }
+    console.log(obj_list);
+    res.render('admin/review', {
+      obj_list: obj_list,
+    });
+    return;
+  }
+
+  const review_data = {
+    teacher_num: 0,
+    student_num: 0,
+  };
+
+  try {
+    let sql = 'SELECT DISTINCT user_id from teacherdata';
+    let results = await utils.sqlQuery(sql);
+    review_data.teacher_num = results.length;
+    sql = 'SELECT DISTINCT user_id from studentdata';
+    results = await utils.sqlQuery(sql);
+    review_data.student_num = results.length;
+    res.render('admin/review', {
+      review_data: review_data,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('error', { errorCode: 500 });
+  }
+});
+
 router.post('/add_clear', (req, res) => {
 	const user = req.session.user;
 
@@ -242,6 +316,42 @@ router.post('/delete', (req, res) => {
 	res.render('dialog', {
     dialog_obj: obj,
   });
+});
+
+router.post('/review', async (req, res) => {
+  const user = req.session.user;
+
+	if (!validAdmin(user)) {
+		res.status(403).render('error', { errorCode: 403 });
+		return;
+	}
+
+  const review_type = req.query.type;
+  if (!review_type) {
+    res.status(403).render('error', { errorCode: 403 });
+  }
+
+  let sql = 'select distinct question.title,question.id qid from'
+  switch (review_type) {
+    case 'student':
+      sql += ' question,studentdata where studentdata.question_id=question.id'
+      break;
+    case 'teacher':
+      sql += ' question,teacherdata where teacherdata.question_id=question.id'
+      break;
+    default:
+  }
+
+  try {
+    let result = await utils.sqlQuery(sql);
+    req.session.review_type = review_type;
+    res.render('admin/review', {
+      question_list: result,
+    });
+  } catch(err) {
+    console.error(err);
+    res.status(500).render(error, {errorCode:500});
+  }
 });
 
 module.exports = router;

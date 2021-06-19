@@ -38,6 +38,7 @@ router.post('/auth', (req, res) => {
 					type: type,
 					id: id,
 				};
+        console.log("loggedin: \n", req.session.user);
 				res.redirect(title ? `/?title=${title}` : '/');
 			} else {
 				res.render('login', {

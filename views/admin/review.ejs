@@ -1,0 +1,49 @@
+<%- include('../header.ejs') %>
+
+<% if (typeof review_data !== 'undefined') { %>
+
+  <div class="card">
+    <h1>查看学生填写情况</h1>
+    <hr>
+    <p>共有<%= review_data.student_num %>名学生填写过问卷。</p>
+    <% if (review_data.student_num > 0) { %>
+      <form class="" method="post" action="/admin/review?type=student">
+        <input type="submit" value="点此查看"></input>
+      </form>
+    <% } %>
+  </div>
+
+  <div class="card">
+    <h1>查看教师填写情况</h1>
+    <hr>
+    <p>共有<%= review_data.teacher_num %>名教师填写过问卷。</p>
+    <% if (review_data.teacher_num > 0) { %>
+      <form class="" method="post" action="/admin/review?type=teacher">
+        <input type="submit" value="点此查看"></input>
+      </form>
+    <% } %>
+  </div>
+
+<% } %>
+
+<% if (typeof question_list !== 'undefined') { %>
+
+  <% for (let i = 0; i < question_list.length; ++i) { %>
+    <div class="card">
+      <h1><%= question_list[i].title %></h1>
+      <p><a href="/admin/review?qid=<%= question_list[i].qid %>">
+        点击此处</a>查看用户填写情况。</p>
+    </div>
+  <% } %>
+
+<% } %>
+
+<% if (typeof obj_list !== 'undefined') { %>
+  <div class="card">
+    <h1><%= obj_list[0].title %></h1>
+    <hr>
+    <%- include('../admin/render_review.ejs') %>
+  </div>
+<% } %>
+
+<%- include('../footer.ejs') %>
