@@ -5,7 +5,7 @@
 body {
   font-family: Arial;
   padding: 0px;
-  background: #d2d5d8;
+  background: rgb(233, 233, 233);
 }
 
 .header {
@@ -54,7 +54,7 @@ body {
   width: 73%;
   padding: 10px;
   margin-left: 20px;
-  background-color: #bfc4c8;
+  background-color: rgba(191, 196, 200, 0.8);
   box-shadow: 0 0.5em 1em 0.5em rgba(0,0,0,0.19);
 }
 

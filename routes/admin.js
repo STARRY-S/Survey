@@ -118,7 +118,7 @@ router.get('/review', async (req, res) => {
           }
         } else if (data[j].type === 'select') {
           ++obj_list[j][data[j].answer];
-        } else {
+        } else if (data[j].type === 'input') {
           obj_list[j].answer_list.push(data[j].answer);
         }
       }
