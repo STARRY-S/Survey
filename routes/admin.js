@@ -123,7 +123,7 @@ router.get('/review', async (req, res) => {
         }
       }
     }
-    console.log(obj_list);
+    // console.log(obj_list);
     res.render('admin/review', {
       obj_list: obj_list,
     });
