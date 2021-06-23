@@ -14,9 +14,12 @@
     <script type="text/javascript">
       const hostname = window.location.hostname || "127.0.0.1";
       const port = window.location.port || '';
+      let url = 'http://';
+      url += (port == '') ? `${hostname}` : `${hostname}:${port}`;
+      console.log(url);
       new QRCode(
         document.getElementById("qrcode"), {
-          text: 'http://' + port == '' ? `${hostname}` : `${hostname}:${port}`,
+          text: url,
         });
     </script>
 
