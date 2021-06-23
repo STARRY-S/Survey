@@ -9,8 +9,8 @@
 - [x] Register, Login/out.
 - [x] Store user information in MySQL database.
 - [x] Use async/await keyword to avoid the callback hell problem.
-- [ ] About page, Right bar, Friends page.
-- [ ] Submit the data filled in by user.
+- [x] About page, Right bar, Friends page.
+- [x] Submit the data filled in by user.
 - [ ] Multi Language Support. (Currently Simplified Chinese)
 
 ## Usage
