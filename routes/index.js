@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require('express');
 const session = require('express-session');
 const pool    = require('../utils').pool;
@@ -63,7 +65,7 @@ router.get('/', async (req, res) => {
   }
 
   let sql = `select title from question where ` +
-      `(user_type = ${type_code} or user_type = 0)`;
+      `((user_type = ${type_code} or user_type = 0) and open = true)`;
   try {
     const results = await utils.sqlQuery(sql);
     let question_list = [];

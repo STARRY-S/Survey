@@ -29,9 +29,18 @@
     <hr>
     <%- include('../render_question') %>
 
+    <% if (!obj_list[0].isopen) { %>
+      <form action="/admin/open?edit_title=<%= title %>" method="post">
+      <input type="submit" value="开放此问卷"></input>
+      </form>
+    <% } else { %>
+      <form action="/admin/close?edit_title=<%= title %>" method="post">
+      <input type="submit" value="关闭问卷"></input>
+      </form>
+    <% } %>
     <form action="/admin/delete?edit_title=<%= title %>" method="post">
     <button class="important">删除此问卷</button>
-    <form>
+    </form>
 
   </div>
 

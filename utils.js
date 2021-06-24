@@ -42,7 +42,7 @@ module.exports.utils = {
       fs.readFile(filename, (err, data) => {
         if (err) reject(err);
         resolve(data);
-      })
+      });
     })
   },
 };

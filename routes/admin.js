@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require('express');
 const session = require('express-session');
 const fs 			= require('fs');
@@ -44,19 +46,23 @@ router.get('/edit', async (req, res) => {
 	if (typeof req.query.edit_title !== 'undefined') {
     const title = req.query.edit_title;
     let obj_list = [];
-    let sql = `select filename from question where title = ? `;
+    let sql = `select filename,open from question where title = ? `;
     try {
-      const results  = await utils.sqlQuery(sql, [ title ]);
+      const results  = await utils.sqlQuery(sql, [title]);
       const filename = results[0].filename;
+			const isopen   = results[0].open || false;
       const data     = await utils.readFile(filename);
       obj_list = JSON.parse(data || '[]');
+			obj_list[0].isopen = isopen;
     } catch (err) {
       console.error("Error when render question page: \n" + err);
       res.status(500).render('error', {errorCode: 500});
       return;
     }
-    res.locals.obj_list = obj_list;
-    res.render('admin/edit', { title: title });
+    res.render('admin/edit', {
+			title: title,
+			obj_list: obj_list,
+		});
     return;
   }
 
@@ -69,7 +75,7 @@ router.get('/edit', async (req, res) => {
     }
     res.render("admin/edit", {
 			pageTitle: "查看已发布的问卷",
-			question_list: question_list
+			question_list: question_list,
 		});
   } catch (err) {
     console.error("Error in admin/edit: \n", err);
@@ -352,6 +358,61 @@ router.post('/review', async (req, res) => {
     console.error(err);
     res.status(500).render(error, {errorCode:500});
   }
+});
+
+router.post('/open', async (req, res) => {
+	const user = req.session.user;
+
+	if (!validAdmin(user)) {
+		res.status(403).render('error', { errorCode: 403 });
+		return;
+	}
+
+	const title = req.query.edit_title;
+	if (typeof title === "undefined") {
+		res.redirect('/');
+		return;
+	}
+
+	try {
+		let sql = "update question set open = ? where title = ? ";
+		let result = await utils.sqlQuery(sql, [ true, title ]);
+		console.log(result);
+		res.render('index', {
+			toast: "开启成功",
+		});
+		return;
+	} catch(err) {
+		console.log(err);
+		res.status(500).render('error', {errorCode: 500});
+	}
+});
+
+router.post('/close', async (req, res) => {
+	const user = req.session.user;
+
+	if (!validAdmin(user)) {
+		res.status(403).render('error', { errorCode: 403 });
+		return;
+	}
+
+	const title = req.query.title;
+	if (typeof title === undefined) {
+		res.redirect('/');
+		return;
+	}
+
+	try {
+		let sql = "update question set open = ? where title = ? ";
+		await utils.sqlQuery(sql, [ false, title ]);
+		res.render('index', {
+			toast: "关闭成功",
+		});
+		return;
+	} catch(err) {
+		console.log(err);
+		res.status(500).render('error', {errorCode: 500});
+	}
 });
 
 module.exports = router;
