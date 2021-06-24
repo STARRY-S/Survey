@@ -129,7 +129,6 @@ router.get('/review', async (req, res) => {
         }
       }
     }
-    // console.log(obj_list);
     res.render('admin/review', {
       obj_list: obj_list,
     });
@@ -377,7 +376,6 @@ router.post('/open', async (req, res) => {
 	try {
 		let sql = "update question set open = ? where title = ? ";
 		let result = await utils.sqlQuery(sql, [ true, title ]);
-		console.log(result);
 		res.render('index', {
 			toast: "开启成功",
 		});
@@ -396,8 +394,8 @@ router.post('/close', async (req, res) => {
 		return;
 	}
 
-	const title = req.query.title;
-	if (typeof title === undefined) {
+	const title = req.query.edit_title;
+	if (typeof title === "undefined") {
 		res.redirect('/');
 		return;
 	}
