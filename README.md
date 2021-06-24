@@ -11,7 +11,8 @@
 - [x] Use async/await keyword to avoid the callback hell problem.
 - [x] About page, Right bar, Friends page.
 - [x] Submit the data filled in by user.
-- [ ] Multi Language Support. (Currently Simplified Chinese)
+- [x] Activating/Deactivating Surveys.
+- [ ] ~~Multi Language Support. (Currently Simplified Chinese)~~
 
 ## Usage
 
@@ -65,6 +66,7 @@ create table teacher (
 create table question (
     id INT AUTO_INCREMENT NOT NULL,
     user_type INT NOT NULL DEFAULT 0,
+    open BOOLEAN NOT NULL DEFAULT FALSE,
     title VARCHAR(50) NOT NULL,
     created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
     filename VARCHAR(128) NOT NULL,
