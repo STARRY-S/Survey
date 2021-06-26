@@ -1,13 +1,13 @@
 const mysql = require('mysql');
-const fs 		= require('fs');
+const fs    = require('fs');
 
 // Edit your MySQL user and password here:
 const pool = module.exports.pool = mysql.createPool({
-	connectionLimit : 10,
-	host     				: 'localhost',
-	user     				: 'starrys',
-	password 				: 'testpassword',
-  database 				: 'survey',
+  connectionLimit : 10,
+  host             : 'localhost',
+  user             : 'starrys',
+  password         : 'testpassword',
+  database         : 'survey',
 });
 
 module.exports.utils = {

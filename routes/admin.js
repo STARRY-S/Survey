@@ -2,25 +2,25 @@
 
 const express = require('express');
 const session = require('express-session');
-const fs 			= require('fs');
+const fs      = require('fs');
 const path    = require('path');
 const router  = express.Router();
 const pool    = require('../utils').pool;
 const utils   = require('../utils').utils;
 
 router.get('/', (req, res) => {
-	res.send("admin");
+  res.send("admin");
 });
 
 const validAdmin = (user) => {
-	if (typeof user === 'undefined' || user.type !== 'admin') {
-		return false;
-	}
-	return true;
+  if (typeof user === 'undefined' || user.type !== 'admin') {
+    return false;
+  }
+  return true;
 }
 
 router.get('/add', (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
   if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
@@ -28,45 +28,45 @@ router.get('/add', (req, res) => {
   }
 
   res.render('admin/create_survey', {
-		pageTitle: "新建问卷",
+    pageTitle: "新建问卷",
     obj_list: req.session.obj_list,
     user_type: req.session.add_user_type,
-	});
+  });
 });
 
 router.get('/edit', async (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
-	if (!validAdmin(user)) {
-		res.status(403).render('error', { errorCode: 403 });
-		return;
-	}
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
+    return;
+  }
 
   // render question page if query.edit_title is not undefined
-	if (typeof req.query.edit_title !== 'undefined') {
+  if (typeof req.query.edit_title !== 'undefined') {
     const title = req.query.edit_title;
     let obj_list = [];
     let sql = `select filename,open from question where title = ? `;
     try {
       const results  = await utils.sqlQuery(sql, [title]);
       const filename = results[0].filename;
-			const isopen   = results[0].open || false;
+      const isopen   = results[0].open || false;
       const data     = await utils.readFile(filename);
       obj_list = JSON.parse(data || '[]');
-			obj_list[0].isopen = isopen;
+      obj_list[0].isopen = isopen;
     } catch (err) {
       console.error("Error when render question page: \n" + err);
       res.status(500).render('error', {errorCode: 500});
       return;
     }
     res.render('admin/edit', {
-			title: title,
-			obj_list: obj_list,
-		});
+      title: title,
+      obj_list: obj_list,
+    });
     return;
   }
 
-	let sql = `select title from question`;
+  let sql = `select title from question`;
   try {
     const results = await utils.sqlQuery(sql);
     let question_list = [];
@@ -74,9 +74,9 @@ router.get('/edit', async (req, res) => {
       question_list.push(results[i].title);
     }
     res.render("admin/edit", {
-			pageTitle: "查看已发布的问卷",
-			question_list: question_list,
-		});
+      pageTitle: "查看已发布的问卷",
+      question_list: question_list,
+    });
   } catch (err) {
     console.error("Error in admin/edit: \n", err);
     res.status(500).render('error', {errorCode: 500});
@@ -157,7 +157,7 @@ router.get('/review', async (req, res) => {
 });
 
 router.post('/add_clear', (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
   if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
@@ -171,28 +171,28 @@ router.post('/add_clear', (req, res) => {
   };
 
   req.session.dialog = obj;
-	res.render('dialog', {
+  res.render('dialog', {
     dialog_obj: obj,
   });
 });
 
 router.post('/add_1', (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
   if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
-	const s_title = req.body.s_title;
+  const s_title = req.body.s_title;
   const first_obj = {
     title: s_title,
     id: null,
   };
   if (typeof req.session.obj_list === 'undefined'
-			|| req.session.obj_list.length < 1) {
+      || req.session.obj_list.length < 1) {
     req.session.obj_list = [];
-		req.session.obj_list.push(first_obj);
+    req.session.obj_list.push(first_obj);
   }
 
   let obj = {
@@ -209,33 +209,33 @@ router.post('/add_1', (req, res) => {
     res.locals.number = obj.q_num;
     req.session.obj_list.push(obj);
     res.render('admin/add_select', {
-			pageTitle: "设置选项",
-		});
+      pageTitle: "设置选项",
+    });
   } else {
     req.session.obj_list.push(obj);
     res.render('admin/create_survey', {
-			pageTitle: "新建问卷",
-			obj_list: req.session.obj_list,
+      pageTitle: "新建问卷",
+      obj_list: req.session.obj_list,
       user_type: req.session.add_user_type,
-		});
+    });
   }
 });
 
 router.post('/add_2', (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
   if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
-	let list = req.session.obj_list;
-	if (list.length <= 1) {
-		res.status(400).render('error', {
-			errorCode: 400,
-		});
-		return;
-	}
+  let list = req.session.obj_list;
+  if (list.length <= 1) {
+    res.status(400).render('error', {
+      errorCode: 400,
+    });
+    return;
+  }
 
   let obj = list[list.length - 1];
   for (let i = 1; i <= obj.q_num; i++) {
@@ -245,21 +245,21 @@ router.post('/add_2', (req, res) => {
   list[list.length - 1] = obj;
   req.session.obj_list = list;
   res.render('admin/create_survey', {
-		pageTitle: "新建问卷",
-		obj_list: req.session.obj_list,
+    pageTitle: "新建问卷",
+    obj_list: req.session.obj_list,
     user_type: req.session.add_user_type,
-	});
+  });
 });
 
 router.post('/submit', async (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
   if (!validAdmin(user)) {
     res.status(403).render('error', { errorCode: 403 });
     return;
   }
 
-	const obj_list = req.session.obj_list;
+  const obj_list = req.session.obj_list;
   let type_code = req.session.add_user_type || 0;
 
 
@@ -276,7 +276,7 @@ router.post('/submit', async (req, res) => {
 
   const survey_name = obj_list[0].title || 'default';
   const filename = path.join('data', utils.hashCode(survey_name) + '.json');
-	let sql = `INSERT INTO question (title, filename, user_type)` +
+  let sql = `INSERT INTO question (title, filename, user_type)` +
       ` VALUES (?, ?, ?)`;
   let list = [obj_list[0].title, filename, obj_list[0].type];
 
@@ -297,17 +297,17 @@ router.post('/submit', async (req, res) => {
 });
 
 router.post('/delete', (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
-	if (!validAdmin(user)) {
-		res.status(403).render('error', {errorCode: 403});
-		return;
-	}
+  if (!validAdmin(user)) {
+    res.status(403).render('error', {errorCode: 403});
+    return;
+  }
 
-	const title = req.query.edit_title;
-	if (title === undefined) {
-		res.render('error', {errorCode: 500});
-	}
+  const title = req.query.edit_title;
+  if (title === undefined) {
+    res.render('error', {errorCode: 500});
+  }
 
   // store dialog information into user session.
   const obj = {
@@ -318,7 +318,7 @@ router.post('/delete', (req, res) => {
   };
 
   req.session.dialog = obj;
-	res.render('dialog', {
+  res.render('dialog', {
     dialog_obj: obj,
   });
 });
@@ -326,10 +326,10 @@ router.post('/delete', (req, res) => {
 router.post('/review', async (req, res) => {
   const user = req.session.user;
 
-	if (!validAdmin(user)) {
-		res.status(403).render('error', { errorCode: 403 });
-		return;
-	}
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
+    return;
+  }
 
   const review_type = req.query.type;
   if (!review_type) {
@@ -360,57 +360,57 @@ router.post('/review', async (req, res) => {
 });
 
 router.post('/open', async (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
-	if (!validAdmin(user)) {
-		res.status(403).render('error', { errorCode: 403 });
-		return;
-	}
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
+    return;
+  }
 
-	const title = req.query.edit_title;
-	if (typeof title === "undefined") {
-		res.redirect('/');
-		return;
-	}
+  const title = req.query.edit_title;
+  if (typeof title === "undefined") {
+    res.redirect('/');
+    return;
+  }
 
-	try {
-		let sql = "update question set open = ? where title = ? ";
-		let result = await utils.sqlQuery(sql, [ true, title ]);
-		res.render('index', {
-			toast: "开启成功",
-		});
-		return;
-	} catch(err) {
-		console.log(err);
-		res.status(500).render('error', {errorCode: 500});
-	}
+  try {
+    let sql = "update question set open = ? where title = ? ";
+    let result = await utils.sqlQuery(sql, [ true, title ]);
+    res.render('index', {
+      toast: "开启成功",
+    });
+    return;
+  } catch(err) {
+    console.log(err);
+    res.status(500).render('error', {errorCode: 500});
+  }
 });
 
 router.post('/close', async (req, res) => {
-	const user = req.session.user;
+  const user = req.session.user;
 
-	if (!validAdmin(user)) {
-		res.status(403).render('error', { errorCode: 403 });
-		return;
-	}
+  if (!validAdmin(user)) {
+    res.status(403).render('error', { errorCode: 403 });
+    return;
+  }
 
-	const title = req.query.edit_title;
-	if (typeof title === "undefined") {
-		res.redirect('/');
-		return;
-	}
+  const title = req.query.edit_title;
+  if (typeof title === "undefined") {
+    res.redirect('/');
+    return;
+  }
 
-	try {
-		let sql = "update question set open = ? where title = ? ";
-		await utils.sqlQuery(sql, [ false, title ]);
-		res.render('index', {
-			toast: "关闭成功",
-		});
-		return;
-	} catch(err) {
-		console.log(err);
-		res.status(500).render('error', {errorCode: 500});
-	}
+  try {
+    let sql = "update question set open = ? where title = ? ";
+    await utils.sqlQuery(sql, [ false, title ]);
+    res.render('index', {
+      toast: "关闭成功",
+    });
+    return;
+  } catch(err) {
+    console.log(err);
+    res.status(500).render('error', {errorCode: 500});
+  }
 });
 
 module.exports = router;
