@@ -88,15 +88,15 @@ router.get('/invite', (req, res) => {
 });
 
 router.get('/about', (req, res) => {
-	res.render('about', { loggedin: req.session.loggedin });
+  res.render('about', { loggedin: req.session.loggedin });
 });
 
 router.get('/friends', (req, res) => {
-	res.render('friends', { loggedin: req.session.loggedin });
+  res.render('friends', { loggedin: req.session.loggedin });
 });
 
 router.get('/error', (req, res) => {
-	res.status(200).render('error', { errorCode: 200 } );
+  res.status(200).render('error', { errorCode: 200 } );
 });
 
 module.exports = router;

@@ -1,9 +1,9 @@
 const express = require('express');
 const session = require('express-session');
-const pool   = require('../utils').pool;
-const fs 			= require('fs');
+const pool    = require('../utils').pool;
+const fs      = require('fs');
 const router  = express.Router();
-const utils= require('../utils').utils;
+const utils   = require('../utils').utils;
 
 router.post('/confirm', (req, res) => {
   const user = req.session.user;
