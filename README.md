@@ -1,6 +1,8 @@
 # Survey
 
-> Still working in progress.
+**The code of this repository is out of date!**
+
+**Only for learning purpose and do not use for any formal application!**
 
 ## Current status
 
