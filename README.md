@@ -12,128 +12,29 @@
 - [x] About page, Right bar, Friends page.
 - [x] Submit the data filled in by user.
 - [x] Activating/Deactivating Surveys.
-- [ ] Multi Language Support. (Currently Simplified Chinese)(Working in progress)
+- [ ] Multi Language Support. (Currently Simplified Chinese)
+(Working in progress)
 
 ## Usage
 
 1. Install MySQL and setup user name and password.
 
-2. Create `admin`, `student`, `teacher`, `question` table.
-
-You need to create database by execute following commands by yourself,
-This program **currently** do not support create database automatically.
-
-``` sql
-create table admin (
-    id int NOT NULL AUTO_INCREMENT,
-    register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    name VARCHAR(63) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
-    PRIMARY KEY (id)
-);
-
-create table student (
-    id INT NOT NULL AUTO_INCREMENT,
-    student_id VARCHAR(20) NOT NULL,
-    register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    name VARCHAR(63) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
-    email VARCHAR(63),
-    info VARCHAR(255),
-    sex VARCHAR(8) DEFAULT '男',
-    age INT,
-    profession VARCHAR(63),
-    class VARCHAR(50),
-    school VARCHAR(50),
-    PRIMARY KEY (id)
-);
-
-create table teacher (
-    id INT NOT NULL AUTO_INCREMENT,
-    teacher_id VARCHAR(20) NOT NULL,
-    register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    name VARCHAR(63) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    phone VARCHAR(15) NOT NULL,
-    email VARCHAR(63),
-    info VARCHAR(255),
-    sex VARCHAR(8) DEFAULT '男',
-    age INT,
-    PRIMARY KEY (id)
-);
-
-create table question (
-    id INT AUTO_INCREMENT NOT NULL,
-    user_type INT NOT NULL DEFAULT 0,
-    open BOOLEAN NOT NULL DEFAULT FALSE,
-    title VARCHAR(50) NOT NULL,
-    created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    filename VARCHAR(128) NOT NULL,
-    PRIMARY KEY(id)
-);
-
-create table studentdata (
-    id INT AUTO_INCREMENT NOT NULL,
-    user_id INT NOT NULL,
-    question_id INT NOT NULL,
-    updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    filename VARCHAR(128) NOT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY (user_id)
-      REFERENCES student(id)
-      ON DELETE CASCADE,
-    FOREIGN KEY (question_id)
-      REFERENCES question(id)
-      ON DELETE CASCADE
-);
-
-create table teacherdata (
-    id INT AUTO_INCREMENT NOT NULL,
-    user_id INT NOT NULL,
-    question_id INT NOT NULL,
-    updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-    filename VARCHAR(128) NOT NULL,
-    PRIMARY KEY(id),
-    FOREIGN KEY (user_id)
-      REFERENCES teacher(id)
-      ON DELETE CASCADE,
-    FOREIGN KEY (question_id)
-      REFERENCES question(id)
-      ON DELETE CASCADE
-);
-```
-And the tables in your database should looks like this:
-
-``` text
-mysql> show tables;
-+---------------------+
-| Tables_in_database  |
-+---------------------+
-| admin               |
-| question            |
-| student             |
-| studentdata         |
-| teacher             |
-| teacherdata         |
-+---------------------+
-6 rows in set (0.00 sec)
-```
-
-3. Clone this repository and install its dependencies: `npm install`.
+2. Clone this repository and install its dependencies by using `npm install`.
 
 ``` shell
 $ git clone https://github.com/STARRY-S/Survey.git
 $ cd Survey
-$ mkdir ./data && mkdir ./data/user
+$ mkdir -p ./data/user
 $ npm install
-$ npm start     # visit http://127.0.0.1:3000
 ```
 
-4. Edit `utils.js`, set the username and password of your mysql database.
+3. Edit `utils.js`, set the username, password, db name of your mysql database.
 
 P.S. You can change the default port number in `app.js`.
+
+4. Use `npm start` to start this program, it will initialize database 
+by itself automatically, and the default admin account name is `admin`, with its
+default password `testpassword`.
 
 ## Others
 
