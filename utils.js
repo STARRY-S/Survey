@@ -17,12 +17,8 @@ function keepAlive() {
         if(err) {
             console.error(err);
         }
-        connection.query("SELECT 1", (err, rows) => {
-            connection.release();
-            if (err) {
-                console.error("Keep Alive Query Error: ", err);
-            }
-        });
+        connection.ping();
+        connection.release();
     });
 }
 setInterval(keepAlive, 1000 * 50);  // Prevent the auto disconnection.
