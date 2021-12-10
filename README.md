@@ -1,4 +1,4 @@
-# Survey System (Demo)
+# Questionnaire Survey System
 
 > **Only for learning purpose and do not use for any formal application!**
 
@@ -17,7 +17,7 @@
 
 ## Usage
 
-1. Install MySQL and setup user name and password.
+1. Setup a MySQL server, create an empty database firstlly.
 
 2. Clone this repository and install its dependencies by using `npm install`.
 
@@ -30,15 +30,16 @@ $ npm install
 
 3. Edit `utils.js`, set the username, password, db name of your mysql database.
 
-P.S. You can change the default port number in `app.js`.
+  P.S. You can change the default port number in `app.js`.
 
-4. Use `npm start` to start this program, it will initialize database 
-by itself automatically, and the default admin account name is `admin`, with its
+4. Use `npm start` to start this program, it will initialize the database 
+automatically, and the default admin account name is `admin`, with its
 default password `testpassword`.
 
 ## Others
 
-This project is just for learning purposes, and it is unsafe and unstable, 
-still need improvements.
+I created this project just for learning purposes, 
+and used it as the homework of my software engineering course,
+so it is currently **unsafe** and **unstable**, still need lots of improvements.
 
 > License MIT

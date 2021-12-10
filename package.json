@@ -1,8 +1,8 @@
 {
   "name": "survey",
   "version": "1.0.1",
-  "description": "A Demo Web Survey System, just for learning JS.",
-  "main": "index.js",
+  "description": "A Questionnarie Survey System (Demo), just for learning JS.",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },

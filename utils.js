@@ -113,6 +113,7 @@ function initializeDatabase() {
     pool.query(sql, (err, results) => {
         if (err) {
             console.error(err);
+            return;
         }
         // console.log(results[0]["num"]);
         if (results.length > 0 && results[0]["num"] === 0) {
