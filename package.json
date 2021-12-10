@@ -1,11 +1,10 @@
 {
   "name": "survey",
-  "version": "1.0.0",
-  "description": "survey",
+  "version": "1.0.1",
+  "description": "A Demo Web Survey System, just for learning JS.",
   "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js"
   },
   "author": "STARRY-S",
   "license": "MIT",
@@ -14,7 +13,7 @@
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-session": "^1.17.2",
-    "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "session-file-store": "^1.5.0"
   }
 }

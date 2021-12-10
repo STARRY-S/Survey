@@ -1,8 +1,6 @@
-# Survey
+# Survey System (Demo)
 
-**The code of this repository is out of date!**
-
-**Only for learning purpose and do not use for any formal application!**
+> **Only for learning purpose and do not use for any formal application!**
 
 ## Current status
 
@@ -14,7 +12,7 @@
 - [x] About page, Right bar, Friends page.
 - [x] Submit the data filled in by user.
 - [x] Activating/Deactivating Surveys.
-- [ ] ~~Multi Language Support. (Currently Simplified Chinese)~~
+- [ ] Multi Language Support. (Currently Simplified Chinese)(Working in progress)
 
 ## Usage
 
@@ -22,7 +20,8 @@
 
 2. Create `admin`, `student`, `teacher`, `question` table.
 
-Here is an example:
+You need to create database by execute following commands by yourself,
+This program **currently** do not support create database automatically.
 
 ``` sql
 create table admin (
@@ -122,7 +121,7 @@ mysql> show tables;
 6 rows in set (0.00 sec)
 ```
 
-Then clone this repository and install dependencies by `npm install`.
+3. Clone this repository and install its dependencies: `npm install`.
 
 ``` shell
 $ git clone https://github.com/STARRY-S/Survey.git
@@ -132,12 +131,13 @@ $ npm install
 $ npm start     # visit http://127.0.0.1:3000
 ```
 
-Edit `utils.js` according to the username and password you set.
+4. Edit `utils.js`, set the username and password of your mysql database.
 
-You can edit default port number in `app.js`.
+P.S. You can change the default port number in `app.js`.
 
 ## Others
 
-This project is just for learning purposes, and may be unsafe and unstable.
+This project is just for learning purposes, and it is unsafe and unstable, 
+still need improvements.
 
 > License MIT

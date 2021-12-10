@@ -4,4 +4,5 @@ data/
 sessions/
 converter/
 
+package-lock.json
 *.bak
