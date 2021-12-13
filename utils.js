@@ -2,6 +2,11 @@
 
 const mysql = require("mysql2");
 const fs    = require("fs");
+const bcrypt = require('bcrypt');
+
+// Change here for enabling SSL Certificate
+const SSL_PRIVATE_KEY_PATH = "";
+const SSL_PUBLIC_KEY_PATH = "";
 
 // Change your MySQL host, username, password and db name here:
 const pool = module.exports.pool = mysql.createPool({
@@ -16,6 +21,10 @@ function keepAlive() {
     pool.getConnection((err, connection) => {
         if(err) {
             console.error(err);
+            return;
+        }
+        if (typeof connection === "undefined") {
+            return;
         }
         connection.ping();
         connection.release();
@@ -157,4 +166,51 @@ module.exports.utils = {
             });
         })
     },
+
+    cryptPassword: (password, callback) => {
+        bcrypt.genSalt(10, (err, salt) => {
+            if (err) 
+                return callback(err);
+
+            bcrypt.hash(password, salt, (err, hash) => {
+                return callback(err, hash);
+            });
+        });
+    },
+
+    comparePassword: (plainPass, hashword, callback) => {
+        bcrypt.compare(plainPass, hashword, (err, isPasswordMatch) => {   
+            return err == null ?
+                callback(null, isPasswordMatch) :
+                callback(err);
+        });
+    },
+
+    initSSLCertificate: () => {
+        let privatekey = "";
+        let publickey = "";
+        let credentials = {};
+        if (SSL_PUBLIC_KEY_PATH === "" || SSL_PRIVATE_KEY_PATH === "") {
+            console.log("SSL Certificate disabled.");
+            return null;
+        }
+
+        try {
+            privatekey = fs.readFileSync(SSL_PRIVATE_KEY_PATH);
+            publickey = fs.readFileSync(SSL_PUBLIC_KEY_PATH);
+            if (privatekey == "" || publickey == "") {
+                console.error("Failed to read SSL Key files.");
+                return null;
+            }
+        } catch(err) {
+            console.error("Failed to read SSL Key files.");
+            console.error(err);
+            return null;
+        }
+        credentials["key"] = privatekey;
+        credentials["cert"] = publickey;
+        return credentials;
+    },
+
+
 };

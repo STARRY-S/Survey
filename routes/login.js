@@ -9,12 +9,12 @@ router.get("/", (req, res) => {
     const title = req.query.title;
     const loggedin = req.session.loggedin;
         if (!loggedin) {
-                res.render("login", {
-                    pageTitle: "请登录",
-                    surveyName: title,
-                });
+            res.render("login", {
+                pageTitle: "请登录",
+                surveyName: title,
+            });
         } else {
-                res.redirect("/");
+            res.redirect("/");
         }
 });
 
