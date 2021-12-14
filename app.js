@@ -35,8 +35,8 @@ app.use(express.static("public"));
 app.use(session({
     store: new FileStore(filestoreOpetions),  // stores session into file
     secret: "secret",             // session secret code
-    resave: true,                 // force session to be saved
-    saveUninitialized: false,     // do not save uninitialized connection
+    resave: false,                // force session to be saved
+    saveUninitialized: true,      // do not save uninitialized connection
     rolling: true,                // Force the session identifier cookie to be set
                                   // on every response
     cookie: {
@@ -51,7 +51,6 @@ app.use(session({
 // make a user object avalable on all templates.
 app.use((req, res, next) => {
     res.locals.user     = req.session.user;
-    res.locals.loggedin = req.session.loggedin;
     next();
 });
 

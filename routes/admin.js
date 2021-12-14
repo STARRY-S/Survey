@@ -85,7 +85,6 @@ router.get("/edit", async (req, res) => {
 
 router.get("/review", async (req, res) => {
     const user = req.session.user;
-    const loggedin = req.session.loggedin;
 
     if (!validAdmin(user)) {
         res.status(403).render("error", { errorCode: 403 });

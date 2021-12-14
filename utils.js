@@ -32,106 +32,7 @@ function keepAlive() {
 }
 setInterval(keepAlive, 1000 * 50);  // Prevent the auto disconnection.
 
-function initializeDatabase() {
-    // TODO: Check if database is initialized.
-    let sql = "create table if not exists admin ("
-        + " id int NOT NULL AUTO_INCREMENT,"
-        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " name VARCHAR(63) NOT NULL,"
-        + " password VARCHAR(255) NOT NULL,"
-        + " phone VARCHAR(15),"
-        + " PRIMARY KEY (id)"
-        + " );";
-    pool.execute(sql);
-    sql = "create table if not exists student ("
-        + " id INT NOT NULL AUTO_INCREMENT,"
-        + " student_id VARCHAR(20) NOT NULL,"
-        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " name VARCHAR(63) NOT NULL,"
-        + " password VARCHAR(255) NOT NULL,"
-        + " phone VARCHAR(15) NOT NULL,"
-        + " email VARCHAR(63),"
-        + " info VARCHAR(255),"
-        + " sex VARCHAR(8) DEFAULT '男',"
-        + " age INT,"
-        + " profession VARCHAR(63),"
-        + " class VARCHAR(50),"
-        + " school VARCHAR(50),"
-        + " PRIMARY KEY (id)"
-        + " );";
-    pool.execute(sql);
-    sql = "create table if not exists teacher ("
-        + " id INT NOT NULL AUTO_INCREMENT,"
-        + " teacher_id VARCHAR(20) NOT NULL,"
-        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " name VARCHAR(63) NOT NULL,"
-        + " password VARCHAR(255) NOT NULL,"
-        + " phone VARCHAR(15) NOT NULL,"
-        + " email VARCHAR(63),"
-        + " info VARCHAR(255),"
-        + " sex VARCHAR(8) DEFAULT '男',"
-        + " age INT,"
-        + " PRIMARY KEY (id)"
-        + ");"
-    pool.execute(sql);
-    sql = "create table if not exists question ("
-        + " id INT AUTO_INCREMENT NOT NULL,"
-        + " user_type INT NOT NULL DEFAULT 0,"
-        + " open BOOLEAN NOT NULL DEFAULT FALSE,"
-        + " title VARCHAR(50) NOT NULL,"
-        + " created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " filename VARCHAR(128) NOT NULL,"
-        + " PRIMARY KEY(id)"
-        + " );";
-    pool.execute(sql);
-    sql = "create table if not exists studentdata ("
-        + " id INT AUTO_INCREMENT NOT NULL,"
-        + " user_id INT NOT NULL,"
-        + " question_id INT NOT NULL,"
-        + " updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " filename VARCHAR(128) NOT NULL,"
-        + " PRIMARY KEY(id),"
-        + " FOREIGN KEY (user_id)"
-        + "   REFERENCES student(id)"
-        + "   ON DELETE CASCADE,"
-        + " FOREIGN KEY (question_id)"
-        + "   REFERENCES question(id)"
-        + "   ON DELETE CASCADE"
-        + " );";
-    pool.execute(sql);
-    sql = "create table if not exists teacherdata ("
-        + " id INT AUTO_INCREMENT NOT NULL,"
-        + " user_id INT NOT NULL,"
-        + " question_id INT NOT NULL,"
-        + " updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
-        + " filename VARCHAR(128) NOT NULL,"
-        + " PRIMARY KEY(id),"
-        + " FOREIGN KEY (user_id)"
-        + "   REFERENCES teacher(id)"
-        + "   ON DELETE CASCADE,"
-        + " FOREIGN KEY (question_id)"
-        + "   REFERENCES question(id)"
-        + "   ON DELETE CASCADE"
-        + " );"
-    pool.execute(sql);
-    sql = "select count(*) as num from admin;";
-    pool.query(sql, (err, results) => {
-        if (err) {
-            console.error(err);
-            return;
-        }
-        // console.log(results[0]["num"]);
-        if (results.length > 0 && results[0]["num"] === 0) {
-            let sql = "insert into admin (name, password)"
-                + " values ('admin', 'testpassword')";
-            pool.execute(sql);
-            console.log("Created default admin account.");
-        }
-    });
-}
-initializeDatabase();
-
-module.exports.utils = {
+let utils = {
     hashCode: (s) => {
         var h = 0, l = s.length, i = 0;
         if ( l > 0 )
@@ -167,22 +68,28 @@ module.exports.utils = {
         })
     },
 
-    cryptPassword: (password, callback) => {
-        bcrypt.genSalt(10, (err, salt) => {
-            if (err) 
-                return callback(err);
-
-            bcrypt.hash(password, salt, (err, hash) => {
-                return callback(err, hash);
+    cryptPassword: (password) => {
+        return new Promise((resolve, reject) => {
+            bcrypt.genSalt(10, (err, salt) => {
+                if (err) 
+                    reject(err);
+    
+                bcrypt.hash(password, salt, (err, hash) => {
+                    if (err) 
+                        reject(err);
+                    resolve(hash);
+                });
             });
-        });
+        })
     },
 
-    comparePassword: (plainPass, hashword, callback) => {
-        bcrypt.compare(plainPass, hashword, (err, isPasswordMatch) => {   
-            return err == null ?
-                callback(null, isPasswordMatch) :
-                callback(err);
+    comparePassword: (plainPass, hashword) => {
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(plainPass, hashword, (err, isPasswordMatch) => {   
+                return err == null ?
+                    resolve(isPasswordMatch) :
+                    reject(err);
+            });
         });
     },
 
@@ -212,5 +119,110 @@ module.exports.utils = {
         return credentials;
     },
 
-
 };
+
+async function initializeDatabase() {
+    // TODO: Check if database is initialized.
+    let sql = "create table if not exists admin ("
+        + " id int NOT NULL AUTO_INCREMENT,"
+        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " name VARCHAR(63) NOT NULL,"
+        + " password VARCHAR(255) NOT NULL,"
+        + " phone VARCHAR(15),"
+        + " PRIMARY KEY (id)"
+        + " );";
+    await utils.sqlQuery(sql);
+    sql = "create table if not exists student ("
+        + " id INT NOT NULL AUTO_INCREMENT,"
+        + " student_id VARCHAR(20) NOT NULL,"
+        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " name VARCHAR(63) NOT NULL,"
+        + " password VARCHAR(255) NOT NULL,"
+        + " phone VARCHAR(15) NOT NULL,"
+        + " email VARCHAR(63),"
+        + " info VARCHAR(255),"
+        + " sex VARCHAR(8) DEFAULT '男',"
+        + " age INT,"
+        + " profession VARCHAR(63),"
+        + " class VARCHAR(50),"
+        + " school VARCHAR(50),"
+        + " PRIMARY KEY (id)"
+        + " );";
+    await utils.sqlQuery(sql);
+    sql = "create table if not exists teacher ("
+        + " id INT NOT NULL AUTO_INCREMENT,"
+        + " teacher_id VARCHAR(20) NOT NULL,"
+        + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " name VARCHAR(63) NOT NULL,"
+        + " password VARCHAR(255) NOT NULL,"
+        + " phone VARCHAR(15) NOT NULL,"
+        + " email VARCHAR(63),"
+        + " info VARCHAR(255),"
+        + " sex VARCHAR(8) DEFAULT '男',"
+        + " age INT,"
+        + " PRIMARY KEY (id)"
+        + ");"
+    await utils.sqlQuery(sql);
+    sql = "create table if not exists question ("
+        + " id INT AUTO_INCREMENT NOT NULL,"
+        + " user_type INT NOT NULL DEFAULT 0,"
+        + " open BOOLEAN NOT NULL DEFAULT FALSE,"
+        + " title VARCHAR(50) NOT NULL,"
+        + " created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " filename VARCHAR(128) NOT NULL,"
+        + " PRIMARY KEY(id)"
+        + " );";
+    await utils.sqlQuery(sql);
+    sql = "create table if not exists studentdata ("
+        + " id INT AUTO_INCREMENT NOT NULL,"
+        + " user_id INT NOT NULL,"
+        + " question_id INT NOT NULL,"
+        + " updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " filename VARCHAR(128) NOT NULL,"
+        + " PRIMARY KEY(id),"
+        + " FOREIGN KEY (user_id)"
+        + "   REFERENCES student(id)"
+        + "   ON DELETE CASCADE,"
+        + " FOREIGN KEY (question_id)"
+        + "   REFERENCES question(id)"
+        + "   ON DELETE CASCADE"
+        + " );";
+    await utils.sqlQuery(sql);
+    sql = "create table if not exists teacherdata ("
+        + " id INT AUTO_INCREMENT NOT NULL,"
+        + " user_id INT NOT NULL,"
+        + " question_id INT NOT NULL,"
+        + " updated_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " filename VARCHAR(128) NOT NULL,"
+        + " PRIMARY KEY(id),"
+        + " FOREIGN KEY (user_id)"
+        + "   REFERENCES teacher(id)"
+        + "   ON DELETE CASCADE,"
+        + " FOREIGN KEY (question_id)"
+        + "   REFERENCES question(id)"
+        + "   ON DELETE CASCADE"
+        + " );"
+    await utils.sqlQuery(sql);
+    sql = "select count(*) as num from admin;";
+    pool.query(sql, (err, results) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        // console.log(results[0]["num"]);
+        if (results.length > 0 && results[0]["num"] === 0) {
+            let sql = "insert into admin (name, password)"
+                + " values ('admin', ?)";
+            try {
+                let hash = bcrypt.hashSync("testpassword", 10);
+                pool.execute(sql, [hash]);
+                console.log("Created default admin account.");
+            } catch (err) {
+                console.error(err);
+            }
+        }
+    });
+}
+initializeDatabase();
+
+module.exports.utils = utils;

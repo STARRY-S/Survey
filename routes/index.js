@@ -1,7 +1,6 @@
 "use strict";
 
 const express = require("express");
-const session = require("express-session");
 const pool    = require("../utils").pool;
 const utils   = require("../utils").utils;
 const fs      = require("fs");
@@ -32,15 +31,16 @@ const getQuestionFileName = (title) => {
 
 router.get("/", async (req, res) => {
     const title = req.query.title;
-    const loggedin = req.session.loggedin;
+    const user = req.session.user;
     let toast = req.session.toast;
-    if (toast) {
-        req.session.toast = undefined;
-    }
 
-    if (!loggedin) {
+    if (!user) {
         res.redirect(title ? `/login?title=${title}` : `/login`);
         return;
+    }
+
+    if (toast) {
+        req.session.toast = undefined;
     }
 
     if (typeof title !== "undefined") {
@@ -88,11 +88,11 @@ router.get("/invite", (req, res) => {
 });
 
 router.get("/about", (req, res) => {
-    res.render("about", { loggedin: req.session.loggedin });
+    res.render("about");
 });
 
 router.get("/friends", (req, res) => {
-    res.render("friends", { loggedin: req.session.loggedin });
+    res.render("friends");
 });
 
 router.get("/error", (req, res) => {

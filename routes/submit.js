@@ -23,9 +23,8 @@ const getUserTableName = (type) => {
 };
 
 router.post("/", async (req, res) => {
-    const loggedin = req.session.loggedin;
     const user     = req.session.user;
-    if (!loggedin) {
+    if (!user) {
         res.status(403).render("error", { errorCode: 403 });
         return;
     }

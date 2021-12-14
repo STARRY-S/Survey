@@ -28,7 +28,7 @@
   <a href="/about">关于</a>
   <a href="/friends">友情链接</a>
   <a href="/invite">分享</a>
-  <% if (typeof loggedin === 'undefined' || !loggedin) { %>
+  <% if (typeof user === 'undefined') { %>
     <a href="/login" style="float:right">登录</a>
   <% } else  { %>
     <!-- TODO: redirect to self information page. -->

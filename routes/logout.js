@@ -5,9 +5,8 @@ const session = require("express-session");
 const router  = express.Router();
 
 router.get("/", (req, res) => {
-    let loggedin = req.session.loggedin;
-    if (loggedin) {
-        req.session.loggedin = false;
+    let user = req.session.user;
+    if (user) {
         req.session.destroy();
     }
     res.redirect("/login");
