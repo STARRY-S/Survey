@@ -15,9 +15,11 @@
     <form method="post" action="/dialog/confirm">
     <button name="confirm" class="important">确认</button>
     </form>
-    <form method="post" action="/dialog/cancel">
-    <button name="cancel">取消</button>
-    </form>
+    <% if (typeof dialog_obj.no_cancel !== 'undefined' && !dialog_obj.no_cancel) { %>
+      <form method="post" action="/dialog/cancel">
+      <button name="cancel">取消</button>
+      </form>
+    <% } %>
 
   </div>
   <% } %>

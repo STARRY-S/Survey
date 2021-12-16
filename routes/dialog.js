@@ -51,6 +51,11 @@ router.post("/confirm", (req, res) => {
             res.redirect("/admin/add");
             break;
         }
+        case "register_failed": {
+            req.session.dialog = {};
+            res.redirect("/register");
+            break;
+        }
         default:
             throw new Error("INVALID DIALOG");
     }

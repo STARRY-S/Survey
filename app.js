@@ -36,7 +36,7 @@ app.use(session({
     store: new FileStore(filestoreOpetions),  // stores session into file
     secret: "secret",             // session secret code
     resave: false,                // force session to be saved
-    saveUninitialized: true,      // do not save uninitialized connection
+    saveUninitialized: false,      // do not save uninitialized connection
     rolling: true,                // Force the session identifier cookie to be set
                                   // on every response
     cookie: {

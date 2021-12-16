@@ -4,7 +4,6 @@ const express = require("express");
 const pool    = require("../utils").pool;
 const utils   = require("../utils").utils;
 const fs      = require("fs");
-const path    = require("path");
 const router  = express.Router();
 
 const openQuestionFile = (filename) => {
@@ -19,7 +18,7 @@ const openQuestionFile = (filename) => {
 };
 
 const getQuestionFileName = (title) => {
-    let sql = `select filename from question where title = ` + pool.escape(title);
+    let sql = `select filename from question where title=` + pool.escape(title);
     return new Promise((resolve, reject) => {
         pool.query(sql, (error, results, fields) => {
             if (error) reject(error);
