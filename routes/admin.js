@@ -218,6 +218,10 @@ router.post("/add_1", (req, res) => {
             user_type: req.session.add_user_type,
         });
     }
+
+    const end_time = req.body.end_time || "1900-01-01 00:00:00";
+    req.session.end_time = end_time;
+    req.session.save();
 });
 
 router.post("/add_2", (req, res) => {
@@ -260,7 +264,8 @@ router.post("/submit", async (req, res) => {
 
     const obj_list = req.session.obj_list;
     let type_code = req.session.add_user_type || 0;
-
+    let end_time = req.session.end_time || "1900-01-01 00:00:00";
+    // console.log(end_time);
 
     switch (type_code) {
         case "teacher": type_code = 2; break;
@@ -275,9 +280,10 @@ router.post("/submit", async (req, res) => {
 
     const survey_name = obj_list[0].title || "default";
     const filename = path.join("data", utils.hashCode(survey_name) + ".json");
-    let sql = `INSERT INTO question (title, filename, user_type)` +
-            ` VALUES (?, ?, ?)`;
-    let list = [obj_list[0].title, filename, obj_list[0].type];
+    let sql = `INSERT INTO question (title, filename, user_type, end_time, `
+            + `open) VALUES (?, ?, ?, ?, ?)`;
+    let list = [obj_list[0].title, filename, obj_list[0].type, end_time,
+        (end_time == "1900-01-01 00:00:00") ? 0 : 1];
 
     try {
         await utils.sqlQuery(sql, list);
@@ -338,10 +344,12 @@ router.post("/review", async (req, res) => {
     let sql = "select distinct question.title,question.id qid from"
     switch (review_type) {
         case "student":
-            sql += " question,studentdata where studentdata.question_id=question.id"
+            sql += " question,studentdata where " 
+                + "studentdata.question_id=question.id"
             break;
         case "teacher":
-            sql += " question,teacherdata where teacherdata.question_id=question.id"
+            sql += " question,teacherdata where "
+                + "teacherdata.question_id=question.id"
             break;
         default:
     }

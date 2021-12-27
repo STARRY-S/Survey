@@ -169,6 +169,7 @@ async function initializeDatabase() {
         + " open BOOLEAN NOT NULL DEFAULT FALSE,"
         + " title VARCHAR(50) NOT NULL,"
         + " created_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
+        + " end_time DATETIME DEFAULT NULL,"
         + " filename VARCHAR(128) NOT NULL,"
         + " PRIMARY KEY(id)"
         + " );";
@@ -224,5 +225,17 @@ async function initializeDatabase() {
     });
 }
 initializeDatabase();
+
+// end_time timer
+setInterval(async () => {
+    let sql = "update question set open = 0 where "
+            + " end_time > created_date and end_time < CURRENT_TIMESTAMP()";
+    try {
+        utils.sqlQuery(sql);
+    } catch(err) {
+        console.error(err);
+    }
+
+}, 60 * 1000);
 
 module.exports.utils = utils;

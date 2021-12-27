@@ -48,12 +48,17 @@ router.post("/confirm", (req, res) => {
 
             req.session.obj_list = [];
             req.session.add_user_type;
-            res.redirect("/admin/add");
+            req.session.save(() => {
+                res.redirect("/admin/add");
+            });
             break;
         }
         case "register_failed": {
             req.session.dialog = {};
             res.redirect("/register");
+            req.session.save(() => {
+                res.redirect("/register");
+            });
             break;
         }
         default:
