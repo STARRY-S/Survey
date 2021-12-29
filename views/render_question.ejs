@@ -28,3 +28,12 @@
   <% } %>
 
 <% } %>
+<% if (typeof obj_list[0] !== "undefined" 
+  && typeof obj_list[0].enable_end_time !== "undefined") 
+{ %>
+  <% if (obj_list[0].enable_end_time 
+    && obj_list[0].end_time !== "1900-01-01 00:00:00") 
+  { %> 
+  <p style="color: red;">问卷截止时间为 <%= obj_list[0].end_time %> </p>
+  <% } %>
+<% } %>  

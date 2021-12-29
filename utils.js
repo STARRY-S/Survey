@@ -4,6 +4,9 @@ const mysql = require("mysql2");
 const fs    = require("fs");
 const bcrypt = require('bcrypt');
 
+// Change here for enable demo warnings.
+const DEMO_ENVIROMENT_WARNING = true;
+
 // Change here for enabling SSL Certificate
 const SSL_PRIVATE_KEY_PATH = "";
 const SSL_PUBLIC_KEY_PATH = "";
@@ -33,6 +36,11 @@ function keepAlive() {
 setInterval(keepAlive, 1000 * 50);  // Prevent the auto disconnection.
 
 let utils = {
+    // Show demo server warnings.
+    isDemo: () => {
+        return DEMO_ENVIROMENT_WARNING;
+    },
+
     hashCode: (s) => {
         var h = 0, l = s.length, i = 0;
         if ( l > 0 )
@@ -225,6 +233,21 @@ async function initializeDatabase() {
     });
 }
 initializeDatabase();
+
+// initialize directories
+function initDirectories() {
+    let dir_list = [];
+    dir_list.push("./data");
+    dir_list.push("./data/user");
+    dir_list.push("./data/upload");
+
+    for (let i = 0; i < dir_list.length; ++i) {
+        if (!fs.existsSync(dir_list[i])){
+            fs.mkdirSync(dir_list[i]);
+        }
+    }
+}
+initDirectories();
 
 // end_time timer
 setInterval(async () => {

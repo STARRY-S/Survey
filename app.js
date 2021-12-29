@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const FileStore  = require("session-file-store")(session);
 const https      = require("https");
 const http       = require("http");
+const fileUpload = require('express-fileupload');
 
 const loginRouter  = require("./routes/login");
 const logoutRouter = require("./routes/logout");
@@ -21,7 +22,7 @@ const port = 3000;
 
 app.locals.site = {
     title:       "高校问卷调查管理系统",
-    description: "想了一下午也没想出来啥宣传标语来。",
+    description: "演示环境。",
 };
 
 const filestoreOpetions = {
@@ -32,6 +33,9 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static("public"));
+app.use(fileUpload({
+    debug: false,
+}));
 app.use(session({
     store: new FileStore(filestoreOpetions),  // stores session into file
     secret: "secret",             // session secret code
@@ -51,6 +55,7 @@ app.use(session({
 // make a user object avalable on all templates.
 app.use((req, res, next) => {
     res.locals.user     = req.session.user;
+    res.locals.demo_warning = utils.isDemo();
     next();
 });
 

@@ -27,6 +27,18 @@ function setAnswerNum() {
     }
 }
 
+function setEndTime() {
+    let checked = document.getElementById("enable_end_time").checked || false;
+    let datetimeField = document.getElementById("end_time");
+    if (checked) {
+        datetimeField.disabled = false;
+        datetimeField.required = true;
+    } else {
+        datetimeField.value = null;
+        datetimeField.disabled = true;
+    }
+}
+
 window.addEventListener("load", function() {
     var now = new Date();
     var utcString = now.toISOString().substring(0,19);

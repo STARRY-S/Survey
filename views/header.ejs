@@ -56,3 +56,9 @@ showToast();
 
 <div class="row">
 <div class="leftcolumn">
+
+  <% if (typeof demo_warning !== "undefined" && demo_warning) { %>
+    <div class="card">
+      <strong style="color:brown">您正在访问测试服务器，请勿输入任何隐私信息，所有数据仅供测试使用。</strong>
+    </div>
+  <% } %>

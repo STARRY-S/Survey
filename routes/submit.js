@@ -61,8 +61,6 @@ router.post("/", async (req, res) => {
                 + `question_id, filename) values ( ?, ?, ? )`;
             const filename = path.join("data", "user",
                     utils.hashCode(user.name + obj_list[0].title) + ".json");
-            // console.log("Submit data: ");
-            // console.log("user_id: %d\nquestion_id: %d\n", user.id, obj_list[0].id);
             let results = await utils.sqlQuery(sql,
                 [user.id, obj_list[0].id, filename]);
             obj_list[0].user = user.id;

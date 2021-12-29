@@ -1,0 +1,43 @@
+<%- include('../header.ejs') %>
+
+<div class="card">
+    <h1>用户管理</h1>
+    <hr>
+    <% if (typeof user_data !== "undefined") { %>
+        <p>目前系统中有<%= user_data.student_num || 0 %>名学生和<%= user_data.teacher_num || 0%>名教师账户。</p>
+        <p>共有<%= user_data.studentdata_num + user_data.teacherdata_num || 0%>篇问卷被回答。</p>
+    <% } %> 
+    <br>
+</div>
+
+<div class="card">
+    <h1>修改管理员帐号密码</h1>
+    <hr>
+    <p>请输入当前管理员帐号和密码：</p>
+    <form action="/admin/change_admin_password" method="post">
+
+    <input type="password" name="original_password" required><br>
+    <br>
+    请输入新的管理员帐号和密码：
+    <input type="password" name="new_password" required><br>
+
+    <input type="submit" value="修改密码" style="background-color: brown;">
+    </form>
+</div>
+
+<div class="card">
+    <h1>帐号导入与导出</h1>
+    <p>将现有的帐号信息导出至文本文件中：</p>
+    <form action="/admin/import-out" method="get">
+    <button name="import-out">导出帐号信息</button>
+    </form>
+
+    <p>导入文本文件中的帐号信息：</p>
+    <form action="/admin/import-in" enctype="multipart/form-data" method="post">
+    <input type="file" name="sampleFile">
+    <button style="background-color:chocolate" type="submit">导入帐号信息</button>
+    <p style="color: brown;">导入帐号的默认密码为：testpassword；系统中已存在的重复帐号将不被导入！</p>
+    </form>
+</div>
+
+<%- include('../footer.ejs') %>

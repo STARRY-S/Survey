@@ -78,8 +78,23 @@
     </select>
     <% } %>
 
-    <p>截止时间：</p>
-    <input type="datetime-local" id="end_time" name="end_time">
+    <hr>
+
+    <% if (typeof obj_list !== "undefined" 
+          && obj_list.length > 0
+          && obj_list[0].enable_end_time) 
+    { %> 
+      <input type="checkbox" id="enable_end_time" name="enable_end_time"
+        value="enable_end_time" onclick="setEndTime()" checked>
+      <span style="font-size: 14px;margin-bottom: 2px;">启用截止时间 </span>
+      <input type="datetime-local" id="end_time" name="end_time" 
+        value="<%= obj_list[0].end_time%>">
+    <% } else { %> 
+      <input type="checkbox" id="enable_end_time" name="enable_end_time"
+        value="enable_end_time" onclick="setEndTime()">
+      <span style="font-size: 14px;margin-bottom: 2px;">启用截止时间 </span>
+      <input type="datetime-local" id="end_time" name="end_time" disabled>
+    <% } %> 
 
     <br>
     <hr>
