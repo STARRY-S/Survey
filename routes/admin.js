@@ -118,7 +118,8 @@ router.get("/review", async (req, res) => {
         // That"s so horrible :-(
         result = await utils.sqlQuery(sql, [review_qid]);
         for (let i = 0; i < result.length; ++i) {
-            let data = JSON.parse(await utils.readFile(result[i].filename) || "[]");
+            let data = JSON.parse(
+                await utils.readFile(result[i].filename) || "[]");
             for (let j = 1; j < data.length; ++j) {
                 if (data[j].type === "multiselect") {
                     for (let p of data[j].answer) {
@@ -189,8 +190,9 @@ router.get('/import-out', async (req, res) => {
     user_obj["students"] = [];
     user_obj["teachers"] = [];
     try {
-        let result = await utils.sqlQuery("select student_id, register_date, name, " 
-            + "phone, email, info, age, profession, class, school from student");
+        let result = await utils.sqlQuery("select student_id, register_date, "
+            + " name, phone, email, info, age, profession, class, school "
+            + " from student");
         for (let i = 0; i < result.length; ++i) {
             user_obj["students"].push({
                 student_id: result[i].student_id,
@@ -205,7 +207,7 @@ router.get('/import-out', async (req, res) => {
                 school: result[i].school,
             });
         }
-        result = await utils.sqlQuery("select teacher_id, register_date, name, " 
+        result = await utils.sqlQuery("select teacher_id, register_date, name, "
             + "phone, email, info, sex, age from teacher");
         for (let i = 0; i < result.length; ++i) {
             user_obj["teachers"].push({
@@ -262,7 +264,7 @@ router.post("/add_1", (req, res) => {
     }
 
     if (typeof req.session.obj_list === "undefined"
-        || req.session.obj_list.length < 1) 
+        || req.session.obj_list.length < 1)
     {
         const s_title = req.body.s_title;
         let first_obj = {
@@ -282,9 +284,11 @@ router.post("/add_1", (req, res) => {
     const add_user_type = req.body.user_type;
     req.session.add_user_type = add_user_type;
 
-    req.session.obj_list[0].enable_end_time = (req.body.enable_end_time ? true : false);
+    req.session.obj_list[0].enable_end_time
+                = (req.body.enable_end_time ? true : false);
     if (req.session.obj_list[0].enable_end_time) {
-        req.session.obj_list[0].end_time = req.body.end_time || "1900-01-01 00:00:00";
+        req.session.obj_list[0].end_time
+                = req.body.end_time || "1900-01-01 00:00:00";
     }
     req.session.save();
 
@@ -352,8 +356,8 @@ router.post("/submit", async (req, res) => {
         return;
     }
     let type_code = req.session.add_user_type || 0;
-    let end_time = 
-        obj_list[0].enable_end_time ? obj_list[0].end_time : "1900-01-01 00:00:00";
+    let end_time = obj_list[0].enable_end_time
+                ? obj_list[0].end_time : "1900-01-01 00:00:00";
 
     switch (type_code) {
         case "teacher": type_code = 2; break;
@@ -432,7 +436,7 @@ router.post("/review", async (req, res) => {
     let sql = "select distinct question.title,question.id qid from"
     switch (review_type) {
         case "student":
-            sql += " question,studentdata where " 
+            sql += " question,studentdata where "
                 + "studentdata.question_id=question.id"
             break;
         case "teacher":
@@ -471,9 +475,9 @@ router.post("/open", async (req, res) => {
     try {
         let sql = "update question set open = ? where title = ? ";
         await utils.sqlQuery(sql, [ true, title ]);
-        sql = "update question set end_time = '1900-01-01 00:00:00' where title = ? "
-            + " and end_time < CURRENT_TIMESTAMP()";
-        await utils.sqlQuery(sql, [title]);
+        // sql = "update question set end_time = '1900-01-01 00:00:00' "
+        //     + "where title = ? and end_time < CURRENT_TIMESTAMP()";
+        // await utils.sqlQuery(sql, [title]);
         res.render("index", {
             toast: "开启成功",
         });
@@ -529,22 +533,26 @@ router.post("/import-in", (req, res) => {
                 console.error(err);
             }
             try {
-                let default_password = await utils.cryptPassword("testpassword");
+                let default_password =
+                    await utils.cryptPassword("testpassword");
                 let content = JSON.parse(await utils.readFile(uploadPath));
                 for (let i = 0; i < content["students"].length; ++i) {
-                    let result = await utils.sqlQuery("select count(*) as n from student "
-                        + " where name=? and student_id=?", [
-                            content["students"][i].name, content["students"][i].student_id
+                    let result = await utils.sqlQuery("select count(*) as n "
+                        + " from student where name=? and student_id=?", [
+                            content["students"][i].name,
+                            content["students"][i].student_id
                     ]);
                     if (result[0].n > 0) {
                         continue;
                     }
-                    await utils.sqlQuery("insert into student " 
-                        + "(student_id, register_date, name, phone, email, info, age, " 
-                        + "profession, class, school, password) values (?,?,?,?,?,?,?,?,?,?,?)", 
+                    await utils.sqlQuery("insert into student "
+                        + "(student_id, register_date, name, phone, email, "
+                        + "info, age, profession, class, school, password) "
+                        + "values (?,?,?,?,?,?,?,?,?,?,?)",
                         [
                             content["students"][i].student_id,
-                            content["students"][i].register_date.substring(0, 19),
+                            content["students"][i].register_date
+                                                  .substring(0, 19),
                             content["students"][i].name,
                             content["students"][i].phone,
                             content["students"][i].email,
@@ -557,19 +565,21 @@ router.post("/import-in", (req, res) => {
                     ]);
                 }
                 for (let i = 0; i < content["teachers"].length; ++i) {
-                    let result = await utils.sqlQuery("select count(*) as n from teacher "
-                        + " where name=? and teacher_id=?", [
-                            content["teachers"][i].name, content["teachers"][i].teacher_id
+                    let result = await utils.sqlQuery("select count(*) as n "
+                        + "from teacher where name=? and teacher_id=?", [
+                            content["teachers"][i].name,
+                            content["teachers"][i].teacher_id
                     ]);
                     if (result[0].n > 0) {
                         continue;
                     }
-                    await utils.sqlQuery("insert into teacher " 
-                        + "(teacher_id, register_date, name, phone, email, info, age, " 
-                        + "sex, password) values (?,?,?,?,?,?,?,?,?)", 
+                    await utils.sqlQuery("insert into teacher "
+                        + "(teacher_id, register_date, name, phone, email, "
+                        + "info,age,sex,password) values (?,?,?,?,?,?,?,?,?)",
                         [
                             content["teachers"][i].teacher_id,
-                            content["teachers"][i].register_date.substring(0, 19),
+                            content["teachers"][i].register_date
+                                                  .substring(0, 19),
                             content["teachers"][i].name,
                             content["teachers"][i].phone,
                             content["teachers"][i].email,
@@ -609,9 +619,68 @@ router.post("/change_admin_password", async (req, res) => {
         return;
     }
     let encrypted_new_passwd = await utils.cryptPassword(new_password);
-    await utils.sqlQuery("update admin set password=? where name=?", 
+    await utils.sqlQuery("update admin set password=? where name=?",
         [encrypted_new_passwd, req.session.user.name]);
     res.render("index", {toast: "密码修改成功"});
+});
+
+router.post("/send_mail", async (req, res) => {
+    const user = req.session.user;
+    let title;
+    if (typeof req.query.title !== "undefined" || !validAdmin(user)) {
+        title = req.query.title;
+    } else {
+        res.status(403).render("error", {errorCode:403});
+        res.end();
+        return;
+    }
+
+    let sql = "select user_type from question where title=?";
+    let result;
+    try {
+        result = await utils.sqlQuery(sql, [title]);
+    } catch(err) {
+        console.error(err);
+        res.status(400).render("error", {errorCode:400});
+        res.end();
+        return;
+    }
+    if (result.length < 1) {
+        res.status(403).render("error", {errorCode:403});
+        res.end();
+        return;
+    }
+    let user_type = result[0].user_type;
+    if (user_type === 0) {
+        // all user
+        utils.sendEmailToAll();
+    } else if (user_type === 1) {
+        // student
+        utils.sendEmailToStudent();
+    } else if (user_type === 2) {
+        // teacher
+        utils.sendEmailToTeacher();
+    }
+    res.render("index", {toast: "发送成功!"});
+    res.end();
+});
+
+router.post("/change_end_time", async (req, res) => {
+    const user = req.session.user;
+    let title;
+    if (typeof req.query.title !== "undefined" || !validAdmin(user)) {
+        title = req.query.title;
+    } else {
+        res.status(403).render("error", {errorCode:403});
+        res.end();
+        return;
+    }
+
+    let end_time = req.body.end_time || "1900-01-01 00:00:00";
+    let sql = "update question set end_time=? where title=?";
+    await utils.sqlQuery(sql, [end_time, title]);
+    res.render("/", {toast: "修改成功!"});
+    res.end();
 });
 
 module.exports = router;

@@ -145,6 +145,82 @@ let utils = {
         });
     },
 
+    sendEmailToAll: () => {
+        if (!config.mail.enable) {
+            return;
+        }
+        utils.sendEmailToStudent();
+        utils.sendEmailToTeacher();
+    },
+
+    sendEmailToStudent: async () => {
+        if (!config.mail.enable) {
+            return;
+        }
+        let sql = "select name,email from student where email != NULL";
+        let result = utils.sqlQuery(sql);
+        for (let i = 0; i < result.length; ++i) {
+            let name = result[i].name;
+            let email = result[i].email;
+            let url = config.ssl.enable ? "https" : "http" + "://";
+            url += `${config.url}:${config.port}`;
+            let options = {
+                form: `${config.title} "<${config.mail.user}>"`,
+                to: `${email}`,
+                subject: `问卷邀请 - ${title}`,
+                text: `问卷邀请 - ${title}`,
+                html: `<h1>问卷邀请</h1>`
+                    + `<br><hr>`
+                    + `<p>${name}，您好：</p><br>`
+                    + `<p>邀请您前来填写问卷：${title}</p>`
+                    + `<p>请<a href="${url}">点击此处</a>访问。</p>`
+                    + `<p>如果您并没有注册本站的帐号，请您忽略本邮件</p>`
+                    + `<p>如果您的浏览器没有响应，请复制以下链接：</p><br>`
+                    + `<code>${url}</code>`
+                    + `<br><br><p>此致</p><strong>admin</strong>`
+            }
+            try {
+                await utils.sendMail(options);
+            } catch(err) {
+                console.error(err);
+            }
+        }
+    },
+
+    sendEmailToTeacher: async () => {
+        if (!config.mail.enable) {
+            return;
+        }
+        let sql = "select name,email from teacher where email != NULL";
+        let result = utils.sqlQuery(sql);
+        for (let i = 0; i < result.length; ++i) {
+            let name = result[i].name;
+            let email = result[i].email;
+            let url = config.ssl.enable ? "https" : "http" + "://";
+            url += `${config.url}:${config.port}`;
+            let options = {
+                form: `${config.title} "<${config.mail.user}>"`,
+                to: `${email}`,
+                subject: `问卷邀请 - ${title}`,
+                text: `问卷邀请 - ${title}`,
+                html: `<h1>问卷邀请</h1>`
+                    + `<br><hr>`
+                    + `<p>${name}，您好：</p><br>`
+                    + `<p>邀请您前来填写问卷：${title}</p>`
+                    + `<p>请<a href="${url}">点击此处</a>访问。</p>`
+                    + `<p>如果您并没有注册本站的帐号，请您忽略本邮件</p>`
+                    + `<p>如果您的浏览器没有响应，请复制以下链接：</p><br>`
+                    + `<code>${url}</code>`
+                    + `<br><br><p>此致</p><strong>admin</strong>`
+            }
+            try {
+                await utils.sendMail(options);
+            } catch(err) {
+                console.error(err);
+            }
+        }
+    },
+
 };
 
 function keepAlive() {
@@ -294,13 +370,5 @@ setInterval(async () => {
     }
 
 }, 60 * 1000);
-
-let options = {
-    from: `"${config.title}"<916584160@qq.com>`,
-    to: 'hxstarrys@gmail.com',
-    subject: 'node邮件',
-    text: `${config.description}`,
-    html: '<h1>hello</h1>'
-};
 
 module.exports.utils = utils;

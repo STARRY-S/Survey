@@ -1,4 +1,5 @@
 <%- include('../header.ejs') %>
+<script src="/js/admin.js" charset="utf-8"></script>
 
 <% if (typeof question_list !== 'undefined') { %>
   <% if (question_list.length > 0) { %>
@@ -25,10 +26,12 @@
 
   <div class="card">
 
-    <h1><%= obj_list[0].title %></h1>
+    <h2>预览问卷：<%= obj_list[0].title %></h2>
     <hr>
     <%- include('../render_question') %>
+  </div>
 
+  <div class="card">
     <% if (!obj_list[0].isopen) { %>
       <form action="/admin/open?edit_title=<%= title %>" method="post">
       <input type="submit" value="开放此问卷"></input>
@@ -41,7 +44,37 @@
     <form action="/admin/delete?edit_title=<%= title %>" method="post">
     <button class="important">删除此问卷</button>
     </form>
+  </div>
+  <div class="card">
+    <h2>设置问卷截止时间</h2>
+    <hr>
+    <form action="/admin/change_end_time?title=<%= obj_list[0].title%>" method="post">
+      <% if (typeof obj_list !== "undefined"
+          && obj_list.length > 0
+          && obj_list[0].enable_end_time)
+      { %>
+        <input type="checkbox" id="enable_end_time" name="enable_end_time"
+          value="enable_end_time" onclick="setEndTime()" checked>
+        <span style="font-size: 14px;margin-bottom: 2px;">启用截止时间 </span>
+        <input type="datetime-local" id="end_time" name="end_time"
+          value="<%= obj_list[0].end_time%>">
+      <% } else { %>
+        <input type="checkbox" id="enable_end_time" name="enable_end_time"
+          value="enable_end_time" onclick="setEndTime()">
+        <span style="font-size: 14px;margin-bottom: 2px;">启用截止时间 </span>
+        <input type="datetime-local" id="end_time" name="end_time" disabled>
+      <% } %>
+      <input type="submit" value="修改截止时间">
 
+    </form>
+  </div>
+  <div class="card">
+    <h2>发送邮箱邀请用户填写问卷</h2>
+    <hr>
+    <form action="/admin/send_mail?title=<%= obj_list[0].title %>" method="post">
+    <input type="submit" value="发送邮件"
+      style="background-color: cadetblue;">
+    </form>
   </div>
 
 <% } %>
