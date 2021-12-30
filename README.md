@@ -24,21 +24,23 @@
 ``` shell
 $ git clone https://github.com/STARRY-S/Survey.git
 $ cd Survey
-$ mkdir -p ./data/user
 $ npm install
 ```
 
-3. Edit `utils.js`, set the username, password, db name of your mysql database.
+3. Move `server-config.yml.temp` to `server-config.yml`, set server properties.
 
-  P.S. You can change the default port number in `app.js`.
+``` shell
+$ mv server-config.yml.temp server-config.yml
+$ vim server-config.yml
+```
 
-4. Use `npm start` to start this program, it will initialize the database 
+4. Use `npm start` to start this program, it will initialize the database
 automatically, and the default admin account name is `admin`, with its
 default password `testpassword`.
 
 ## Others
 
-I created this project just for learning purposes, 
+I created this project just for learning purposes,
 and used it as the homework of my software engineering course,
 so it is currently **unsafe** and **unstable**, still need lots of improvements.
 

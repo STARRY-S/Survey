@@ -4,5 +4,6 @@ data/
 sessions/
 converter/
 
+server-config.yml
 package-lock.json
 *.bak

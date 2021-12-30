@@ -2,6 +2,11 @@
   box-sizing: border-box;
 }
 
+::selection {
+  /* color: rgb(222, 216, 216); */
+  background: rgba(170, 170, 170, 0.3);
+}
+
 body {
   font-family: Arial;
   padding: 0px;

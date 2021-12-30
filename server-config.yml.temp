@@ -1,0 +1,31 @@
+# Server configuration
+
+title: "Questionnaire System"
+description: "Sample Description"
+port: 3000
+session_secret: "SECRET_CODE"
+
+## Enable demo warnings.
+demo_warning: true
+
+## SSL Key path
+ssl:
+  enable: false
+  private:
+  public:
+
+## MySQL
+mysql:
+  connection_limit: 10
+  host: "localhost"
+  user: "USERNAME"
+  password: "PASSWORD"
+  database: "DATABASE"
+
+## Mail service
+### SMTP
+mail:
+  enable: false
+  host: "SMTP_HOST"
+  user: "USERNAME"
+  password: "PASSWORD"

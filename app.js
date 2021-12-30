@@ -18,11 +18,11 @@ const submitRouter = require("./routes/submit");
 const dialogRouter = require("./routes/dialog");
 const utils        = require("./utils").utils;
 
-const port = 3000;
+const port = utils.getConfig().port;
 
 app.locals.site = {
-    title:       "高校问卷调查管理系统",
-    description: "演示环境。",
+    title:       utils.getConfig().title,
+    description: utils.getConfig().description,
 };
 
 const filestoreOpetions = {
@@ -38,9 +38,9 @@ app.use(fileUpload({
 }));
 app.use(session({
     store: new FileStore(filestoreOpetions),  // stores session into file
-    secret: "secret",             // session secret code
+    secret: utils.getConfig().session_secret, // session secret code
     resave: false,                // force session to be saved
-    saveUninitialized: false,      // do not save uninitialized connection
+    saveUninitialized: false,     // do not save uninitialized connection
     rolling: true,                // Force the session identifier cookie to be set
                                   // on every response
     cookie: {
@@ -55,7 +55,7 @@ app.use(session({
 // make a user object avalable on all templates.
 app.use((req, res, next) => {
     res.locals.user     = req.session.user;
-    res.locals.demo_warning = utils.isDemo();
+    res.locals.demo_warning = utils.getConfig().demo_warning;
     next();
 });
 

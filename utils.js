@@ -2,43 +2,47 @@
 
 const mysql = require("mysql2");
 const fs    = require("fs");
-const bcrypt = require('bcrypt');
+const YAML  = require("yaml");
+const bcrypt = require("bcrypt");
+const nodemailer = require("nodemailer");
+const CONFIG_PATH = "server-config.yml";
 
-// Change here for enable demo warnings.
-const DEMO_ENVIROMENT_WARNING = true;
+let config;
+try {
+    config = YAML.parse(fs.readFileSync(CONFIG_PATH, "utf-8"));
+} catch(err) {
+    console.error(err);
+    console.error("FATAL: failed to read config file: " + CONFIG_PATH);
+    process.exit(1);
+}
 
-// Change here for enabling SSL Certificate
-const SSL_PRIVATE_KEY_PATH = "";
-const SSL_PUBLIC_KEY_PATH = "";
-
-// Change your MySQL host, username, password and db name here:
 const pool = module.exports.pool = mysql.createPool({
-    connectionLimit : 10,
-    host             : "localhost",
-    user             : "starrys",
-    password         : "testpassword",
-    database         : "survey",
+    connectionLimit : config.mysql.connection_limit,
+    host            : config.mysql.host,
+    user            : config.mysql.user,
+    password        : config.mysql.password,
+    database        : config.mysql.database,
 });
 
-function keepAlive() {
-    pool.getConnection((err, connection) => {
-        if(err) {
-            console.error(err);
-            return;
-        }
-        if (typeof connection === "undefined") {
-            return;
-        }
-        connection.ping();
-        connection.release();
-    });
+let transporter;
+if (config.mail.enable) {
+    try {
+        transporter = nodemailer.createTransport({
+            host: config.mail.host,
+            secure: true,
+            auth: {
+                user: config.mail.user,
+                pass: config.mail.password,
+            },
+        });
+    } catch (err) {
+        console.error(err);
+    }
 }
-setInterval(keepAlive, 1000 * 50);  // Prevent the auto disconnection.
 
 let utils = {
-    // Show demo server warnings.
-    isDemo: () => {
-        return DEMO_ENVIROMENT_WARNING;
+    getConfig: () => {
+        return config;
     },
 
     hashCode: (s) => {
@@ -79,11 +83,11 @@ let utils = {
     cryptPassword: (password) => {
         return new Promise((resolve, reject) => {
             bcrypt.genSalt(10, (err, salt) => {
-                if (err) 
+                if (err)
                     reject(err);
-    
+
                 bcrypt.hash(password, salt, (err, hash) => {
-                    if (err) 
+                    if (err)
                         reject(err);
                     resolve(hash);
                 });
@@ -93,7 +97,7 @@ let utils = {
 
     comparePassword: (plainPass, hashword) => {
         return new Promise((resolve, reject) => {
-            bcrypt.compare(plainPass, hashword, (err, isPasswordMatch) => {   
+            bcrypt.compare(plainPass, hashword, (err, isPasswordMatch) => {
                 return err == null ?
                     resolve(isPasswordMatch) :
                     reject(err);
@@ -105,14 +109,16 @@ let utils = {
         let privatekey = "";
         let publickey = "";
         let credentials = {};
-        if (SSL_PUBLIC_KEY_PATH === "" || SSL_PRIVATE_KEY_PATH === "") {
+        if (!config.ssl.enabled || config.ssl.private === ""
+            || config.ssl.public === "")
+        {
             console.log("SSL Certificate disabled.");
             return null;
         }
 
         try {
-            privatekey = fs.readFileSync(SSL_PRIVATE_KEY_PATH);
-            publickey = fs.readFileSync(SSL_PUBLIC_KEY_PATH);
+            privatekey = fs.readFileSync(config.ssl.private);
+            publickey = fs.readFileSync(config.ssl.public);
             if (privatekey == "" || publickey == "") {
                 console.error("Failed to read SSL Key files.");
                 return null;
@@ -127,11 +133,40 @@ let utils = {
         return credentials;
     },
 
+    sendMail: (options) => {
+        return new Promise((resolve, reject) => {
+            transporter.sendMail(options, (error, info) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(info);
+                }
+            });
+        });
+    },
+
 };
 
+function keepAlive() {
+    pool.getConnection((err, connection) => {
+        if(err) {
+            console.error(err);
+            return;
+        }
+        if (typeof connection === "undefined") {
+            return;
+        }
+        connection.ping();
+        connection.release();
+    });
+}
+setInterval(keepAlive, 1000 * 50);  // Prevent the auto disconnection.
+
 async function initializeDatabase() {
-    // TODO: Check if database is initialized.
-    let sql = "create table if not exists admin ("
+    let sql;
+    // sql = "create database if not exist ?";
+    // await utils.sqlQuery(sql, [config.mysql.database]);
+    sql = "create table if not exists admin ("
         + " id int NOT NULL AUTO_INCREMENT,"
         + " register_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP(),"
         + " name VARCHAR(63) NOT NULL,"
@@ -218,7 +253,6 @@ async function initializeDatabase() {
             console.error(err);
             return;
         }
-        // console.log(results[0]["num"]);
         if (results.length > 0 && results[0]["num"] === 0) {
             let sql = "insert into admin (name, password)"
                 + " values ('admin', ?)";
@@ -249,7 +283,7 @@ function initDirectories() {
 }
 initDirectories();
 
-// end_time timer
+// deadline timer
 setInterval(async () => {
     let sql = "update question set open = 0 where "
             + " end_time > created_date and end_time < CURRENT_TIMESTAMP()";
@@ -260,5 +294,13 @@ setInterval(async () => {
     }
 
 }, 60 * 1000);
+
+let options = {
+    from: `"${config.title}"<916584160@qq.com>`,
+    to: 'hxstarrys@gmail.com',
+    subject: 'node邮件',
+    text: `${config.description}`,
+    html: '<h1>hello</h1>'
+};
 
 module.exports.utils = utils;
