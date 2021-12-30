@@ -162,8 +162,8 @@ let utils = {
         for (let i = 0; i < result.length; ++i) {
             let name = result[i].name;
             let email = result[i].email;
-            let url = config.ssl.enable ? "https" : "http" + "://";
-            url += `${config.url}:${config.port}`;
+            let url = config.ssl.enable ? "https" : "http";
+            url += `://${config.url}:${config.port}`;
             let options = {
                 from: `"${config.title}"<${config.mail.user}>`,
                 to: `${email}`,
@@ -196,10 +196,10 @@ let utils = {
         for (let i = 0; i < result.length; ++i) {
             let name = result[i].name;
             let email = result[i].email;
-            let url = config.ssl.enable ? "https" : "http" + "://";
+            let url = config.ssl.enable ? "https://" : "http://";
             url += `${config.url}:${config.port}`;
             let options = {
-                form: `"${config.title}" <${config.mail.user}>`,
+                from: `"${config.title}" <${config.mail.user}>`,
                 to: `${email}`,
                 subject: `问卷邀请-${config.title}`,
                 text: `问卷邀请-${config.title}`,
