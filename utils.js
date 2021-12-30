@@ -157,26 +157,26 @@ let utils = {
         if (!config.mail.enable) {
             return;
         }
-        let sql = "select name,email from student where email != NULL";
-        let result = utils.sqlQuery(sql);
+        let sql = "select name,email from student where email is not NULL";
+        let result = await utils.sqlQuery(sql);
         for (let i = 0; i < result.length; ++i) {
             let name = result[i].name;
             let email = result[i].email;
             let url = config.ssl.enable ? "https" : "http" + "://";
             url += `${config.url}:${config.port}`;
             let options = {
-                form: `${config.title} "<${config.mail.user}>"`,
+                from: `"${config.title}"<${config.mail.user}>`,
                 to: `${email}`,
-                subject: `问卷邀请 - ${title}`,
-                text: `问卷邀请 - ${title}`,
-                html: `<h1>问卷邀请</h1>`
-                    + `<br><hr>`
+                subject: `问卷邀请-${config.title}`,
+                text: `问卷邀请-${config.title}`,
+                html: `<h2>问卷邀请</h2>`
+                    + `<hr><br>`
                     + `<p>${name}，您好：</p><br>`
-                    + `<p>邀请您前来填写问卷：${title}</p>`
-                    + `<p>请<a href="${url}">点击此处</a>访问。</p>`
+                    + `<p>管理员开放了新的调查问卷，邀请您填写：</p>`
+                    + `<p>请<a href="${url}">点击此处</a>访问网站。</p>`
+                    + `<p>如果您的浏览器没有响应，请复制以下链接到浏览器中访问：</p><br>`
+                    + `<code>${url}</code><br><br>`
                     + `<p>如果您并没有注册本站的帐号，请您忽略本邮件</p>`
-                    + `<p>如果您的浏览器没有响应，请复制以下链接：</p><br>`
-                    + `<code>${url}</code>`
                     + `<br><br><p>此致</p><strong>admin</strong>`
             }
             try {
@@ -191,26 +191,26 @@ let utils = {
         if (!config.mail.enable) {
             return;
         }
-        let sql = "select name,email from teacher where email != NULL";
-        let result = utils.sqlQuery(sql);
+        let sql = "select name,email from teacher where email is not NULL";
+        let result = await utils.sqlQuery(sql);
         for (let i = 0; i < result.length; ++i) {
             let name = result[i].name;
             let email = result[i].email;
             let url = config.ssl.enable ? "https" : "http" + "://";
             url += `${config.url}:${config.port}`;
             let options = {
-                form: `${config.title} "<${config.mail.user}>"`,
+                form: `"${config.title}" <${config.mail.user}>`,
                 to: `${email}`,
-                subject: `问卷邀请 - ${title}`,
-                text: `问卷邀请 - ${title}`,
-                html: `<h1>问卷邀请</h1>`
-                    + `<br><hr>`
+                subject: `问卷邀请-${config.title}`,
+                text: `问卷邀请-${config.title}`,
+                html: `<h2>问卷邀请</h2>`
+                    + `<hr><br>`
                     + `<p>${name}，您好：</p><br>`
-                    + `<p>邀请您前来填写问卷：${title}</p>`
-                    + `<p>请<a href="${url}">点击此处</a>访问。</p>`
+                    + `<p>管理员开放了新的调查问卷，邀请您填写：</p>`
+                    + `<p>请<a href="${url}">点击此处</a>访问网站。</p>`
+                    + `<p>如果您的浏览器没有响应，请复制以下链接到浏览器中访问：</p><br>`
+                    + `<code>${url}</code><br><br>`
                     + `<p>如果您并没有注册本站的帐号，请您忽略本邮件</p>`
-                    + `<p>如果您的浏览器没有响应，请复制以下链接：</p><br>`
-                    + `<code>${url}</code>`
                     + `<br><br><p>此致</p><strong>admin</strong>`
             }
             try {
