@@ -109,7 +109,7 @@ let utils = {
         let privatekey = "";
         let publickey = "";
         let credentials = {};
-        if (!config.ssl.enabled || config.ssl.private === ""
+        if (!config.ssl.enable || config.ssl.private === ""
             || config.ssl.public === "")
         {
             console.log("SSL Certificate disabled.");
