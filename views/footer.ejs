@@ -11,5 +11,34 @@
   </div>
 </div>
 
+<div class="musicbox">
+  <div id="aplayer"></div>
+</div>
+<script>
+  const ap = new APlayer({
+      container: document.getElementById('aplayer'),
+      fixed: true,
+      audio: [{
+        name: 'sand dream',
+        artist: 'Yuki Kajura',
+        theme: '#857f58',
+        url: 'https://music.starry-s.moe/music/41d7_92fe_3e2f_49b31565f5b2dc00df4d8fb14b1bc59f.mp3',
+        cover: 'https://music.starry-s.moe/music/cover/gfp7e39qcxSOYuoTx9zbaA==_716881581332123.jpg'
+      }, {
+          name: 'Gloria',
+          artist: 'Kalafina',
+          theme: '#2f501b',
+          url: 'https://music.starry-s.moe/music/obj_w5rDlsOJwrLDjj7CmsOj_8942498360_1879_0685_c1e4_dc081eef64f48a5c536b7e14de40afbe.m4a',
+          cover: 'https://music.starry-s.moe/music/cover/109951166199995897.jpg'
+      }, {
+        name: 'Jr.',
+        artist: 'Yuki Kajura',
+        theme: '#236b8f',
+        url: 'https://music.starry-s.moe/music/obj_w5rDlsOJwrLDjj7CmsOj_9105446245_10b9_926d_e1bd_031289ec9879d22d1c98d397a04d0e0b.m4a',
+        cover: 'https://music.starry-s.moe/music/cover/109951166004086774.jpg'
+      }]
+  });
+  </script>
+
 </body>
 </html>

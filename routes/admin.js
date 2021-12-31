@@ -12,7 +12,7 @@ const utils   = require("../utils").utils;
  * handle get
  */
 router.get("/", (req, res) => {
-    res.send("admin");
+    res.redirect("/");
 });
 
 const validAdmin = (user) => {
