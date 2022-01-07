@@ -66,7 +66,7 @@ app.use((req, res, next) => {
 
     if (url_check && host !== url && host !== `${url}:${port}`) {
         let protocol = (utils.getConfig().ssl.enable) ? "https" : "http";
-        res.redirect(`${protocol}://${url}:${port}`);
+        res.redirect(`${protocol}://${url}`);
         res.end();
         return;
     }
