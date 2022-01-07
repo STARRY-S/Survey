@@ -2,9 +2,12 @@
 
 title: "Questionnaire System"
 description: "Sample Description"
-url: 127.0.0.1
+url: "127.0.0.1"
 port: 3000
 session_secret: "SECRET_CODE"
+
+# Redirect client URL to http(s)://url:port
+url_check: false
 
 ## Enable demo warnings.
 demo_warning: true

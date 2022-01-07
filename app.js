@@ -18,7 +18,8 @@ const submitRouter = require("./routes/submit");
 const dialogRouter = require("./routes/dialog");
 const utils        = require("./utils").utils;
 
-const port = utils.getConfig().port;
+const port = utils.getConfig().port || 3000;
+const url_check = utils.getConfig().url_check || false;
 
 app.locals.site = {
     title:       utils.getConfig().title,
@@ -56,6 +57,19 @@ app.use(session({
 app.use((req, res, next) => {
     res.locals.user     = req.session.user;
     res.locals.demo_warning = utils.getConfig().demo_warning;
+    let url = utils.getConfig().url;
+    let host = req.get("host");
+    if (typeof host === "undefined" || host == "") {
+        next();
+        return;
+    }
+
+    if (url_check && host !== url && host !== `${url}:${port}`) {
+        let protocol = (utils.getConfig().ssl.enable) ? "https" : "http";
+        res.redirect(`${protocol}://${url}:${port}`);
+        res.end();
+        return;
+    }
     next();
 });
 
